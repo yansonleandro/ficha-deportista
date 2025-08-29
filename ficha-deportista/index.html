@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ficha Deportiva</title>
+    <!-- Incluye Tailwind CSS para un diseño moderno y responsivo -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Estilo para la fuente Inter, que se ve limpia y moderna */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            color: #1f2937;
+        }
+        /* Estilo para el contenedor principal de la ficha */
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: #ffffff;
+            border-radius: 1.5rem; /* Bordes más redondeados */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        /* Estilo para los títulos de las secciones */
+        h2 {
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: #1f2937;
+        }
+        /* Estilo para las etiquetas de los campos */
+        label {
+            font-weight: 500;
+            color: #4b5563;
+        }
+        /* Estilo para los campos de entrada de texto */
+        input[type="text"], input[type="date"], input[type="number"], input[type="email"], textarea, select {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 0.75rem; /* Bordes redondeados */
+            border: 1px solid #d1d5db;
+            background-color: #f9fafb;
+            transition: all 0.2s ease-in-out;
+        }
+        /* Estilo para el hover y focus de los campos */
+        input[type="text"]:focus, input[type="date"]:focus, input[type="number"]:focus, input[type="email"]:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+        }
+        /* Estilo para los botones */
+        .button {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: background-color 0.2s;
+            cursor: pointer;
+            border: none;
+        }
+        .button-primary {
+             padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            background-color: #1d4ed8;
+            color: #ffffff;
+        }
+        .button-primary:hover {
+            background-color: #1e40af;
+        }
+        .button-secondary {
+            background-color: #6b7280;
+            color: white;
+        }
+        .button-secondary:hover {
+            background-color: #4b5563;
+        }
+        .button-danger {
+            background-color: #dc2626;
+            color: white;
+        }
+        .button-danger:hover {
+            background-color: #b91c1c;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-6">
+    <div class="container mx-auto p-8 bg-white rounded-3xl shadow-lg">
+        <h1 class="text-3xl font-bold text-center mb-6">Ficha del Deportista</h1>
+        <p id="userIdDisplay" class="text-sm text-center text-gray-500 mb-6 hidden"></p>
+
+        <!-- Formulario de entrada de datos -->
+        <form id="deportistaForm" class="space-y-6">
+            <input type="hidden" id="editingDeportistaId">
+            
+            <!-- Sección de Datos Personales -->
+            <div class="p-6 bg-gray-50 rounded-2xl">
+                <h2 class="text-2xl font-semibold mb-4">Datos Personales</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="nombre" class="block mb-2 text-sm">Nombre Completo</label>
+                        <input type="text" id="nombre" name="nombre" class="rounded-xl" placeholder="Ej: Juan Pérez" required>
+                    </div>
+                    <div>
+                        <label for="fechaNacimiento" class="block mb-2 text-sm">Fecha de Nacimiento</label>
+                        <input type="date" id="fechaNacimiento" name="fechaNacimiento" class="rounded-xl">
+                    </div>
+                    <div>
+                        <label for="telefono" class="block mb-2 text-sm">Teléfono de contacto</label>
+                        <input type="text" id="telefono" name="telefono" class="rounded-xl" placeholder="Ej: 341 1234567">
+                    </div>
+                    <div>
+                        <label for="email" class="block mb-2 text-sm">Correo electrónico</label>
+                        <input type="email" id="email" name="email" class="rounded-xl" placeholder="ejemplo@correo.com">
+                    </div>
+                    <div>
+                        <label for="nombreEmergencia" class="block mb-2 text-sm">Contacto de emergencia (Nombre)</label>
+                        <input type="text" id="nombreEmergencia" name="nombreEmergencia" class="rounded-xl" placeholder="Ej: María González">
+                    </div>
+                    <div>
+                        <label for="telefonoEmergencia" class="block mb-2 text-sm">Contacto de emergencia (Teléfono)</label>
+                        <input type="text" id="telefonoEmergencia" name="telefonoEmergencia" class="rounded-xl" placeholder="Ej: 341 7654321">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección de Datos Físicos y Deportivos -->
+            <div class="p-6 bg-gray-50 rounded-2xl">
+                <h2 class="text-2xl font-semibold mb-4">Datos Físicos y Deportivos</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label for="altura" class="block mb-2 text-sm">Altura (cm)</label>
+                        <input type="number" id="altura" name="altura" class="rounded-xl" placeholder="Ej: 190">
+                    </div>
+                    <div>
+                        <label for="peso" class="block mb-2 text-sm">Peso (kg)</label>
+                        <input type="number" id="peso" name="peso" class="rounded-xl" placeholder="Ej: 85">
+                    </div>
+                    <div>
+                        <label for="posicion" class="block mb-2 text-sm">Posición</label>
+                        <select id="posicion" name="posicion" class="rounded-xl">
+                            <option value="">Seleccionar...</option>
+                            <option value="Base">Base</option>
+                            <option value="Escolta">Escolta</option>
+                            <option value="Alero">Alero</option>
+                            <option value="Ala-Pivot">Ala-Pivot</option>
+                            <option value="Pivot">Pivot</option>
+                        </select>
+                    </div>
+                </div>
+                 <div class="mt-4">
+                    <label for="condicionFisica" class="block mb-2 text-sm">Condición física</label>
+                    <textarea id="condicionFisica" name="condicionFisica" rows="2" class="rounded-xl" placeholder="Resultados de pruebas de resistencia, fuerza, etc."></textarea>
+                </div>
+                 <div class="mt-4">
+                    <label for="rendimientoReciente" class="block mb-2 text-sm">Rendimiento reciente</label>
+                    <textarea id="rendimientoReciente" name="rendimientoReciente" rows="2" class="rounded-xl" placeholder="Mejores marcas, logros, competencias"></textarea>
+                </div>
+                 <div class="mt-4">
+                    <label for="objetivosDeportivos" class="block mb-2 text-sm">Objetivos deportivos</label>
+                    <textarea id="objetivosDeportivos" name="objetivosDeportivos" rows="2" class="rounded-xl" placeholder="Metas a corto, mediano y largo plazo"></textarea>
+                </div>
+            </div>
+
+            <!-- Sección de Historia Clínica -->
+            <div class="p-6 bg-gray-50 rounded-2xl">
+                <h2 class="text-2xl font-semibold mb-4">Historia Clínica</h2>
+                <h3 class="text-lg font-semibold mb-3">A. Antecedentes Personales</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="alergias" class="block mb-2 text-sm">Alergias</label>
+                        <input type="text" id="alergias" name="alergias" class="rounded-xl" placeholder="Medicamentos, alimentos, etc.">
+                    </div>
+                    <div>
+                        <label for="vacunas" class="block mb-2 text-sm">Vacunas</label>
+                        <input type="text" id="vacunas" name="vacunas" class="rounded-xl" placeholder="Esquema completo">
+                    </div>
+                </div>
+                 <div class="mt-4">
+                    <label for="enfermedadesCronicas" class="block mb-2 text-sm">Enfermedades crónicas</label>
+                    <textarea id="enfermedadesCronicas" name="enfermedadesCronicas" rows="2" class="rounded-xl" placeholder="Asma, diabetes, etc."></textarea>
+                </div>
+                 <div class="mt-4">
+                    <label for="medicamentosActuales" class="block mb-2 text-sm">Medicamentos actuales</label>
+                    <textarea id="medicamentosActuales" name="medicamentosActuales" rows="2" class="rounded-xl" placeholder="Dosis y motivo"></textarea>
+                </div>
+                 <div class="mt-4">
+                    <label for="habitos" class="block mb-2 text-sm">Hábitos</label>
+                    <textarea id="habitos" name="habitos" rows="2" class="rounded-xl" placeholder="Consumo de tabaco, alcohol, etc."></textarea>
+                </div>
+                
+                <div id="cirugiasContainer" class="space-y-4 mt-6">
+                    <h3 class="text-lg font-semibold">B. Cirugías Previas</h3>
+                </div>
+                <button type="button" id="addCirugiaBtn" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                    + Añadir Cirugía
+                </button>
+
+                <div id="lesionesContainer" class="space-y-4 mt-6">
+                    <h3 class="text-lg font-semibold">C. Historial de Lesiones</h3>
+                </div>
+                <button type="button" id="addLesionBtn" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                    + Añadir Lesión
+                </button>
+            </div>
+            
+            <!-- Examen físico y diagnóstico inicial -->
+            <div class="p-6 bg-gray-50 rounded-2xl">
+                <h2 class="text-2xl font-semibold mb-4">Examen Físico y Diagnóstico Inicial</h2>
+                <div class="space-y-4">
+                    <div>
+                        <label for="estadoGeneral" class="block mb-2 text-sm">Estado general</label>
+                        <textarea id="estadoGeneral" name="estadoGeneral" rows="2" class="rounded-xl" placeholder="Observaciones sobre el aspecto físico y salud aparente"></textarea>
+                    </div>
+                    <div>
+                        <label for="examenCardiologico" class="block mb-2 text-sm">Examen cardiológico</label>
+                        <textarea id="examenCardiologico" name="examenCardiologico" rows="2" class="rounded-xl" placeholder="Frecuencia cardíaca en reposo, presión arterial, etc."></textarea>
+                    </div>
+                    <div>
+                        <label for="examenOsteoArticular" class="block mb-2 text-sm">Examen osteo-articular</label>
+                        <textarea id="examenOsteoArticular" name="examenOsteoArticular" rows="2" class="rounded-xl" placeholder="Revisión de articulaciones, rangos de movimiento, etc."></textarea>
+                    </div>
+                     <div>
+                        <label for="diagnosticoMedico" class="block mb-2 text-sm">Diagnóstico médico</label>
+                        <textarea id="diagnosticoMedico" name="diagnosticoMedico" rows="2" class="rounded-xl" placeholder="Conclusión médica de la evaluación inicial"></textarea>
+                    </div>
+                     <div>
+                        <label for="recomendaciones" class="block mb-2 text-sm">Recomendaciones y plan de acción</label>
+                        <textarea id="recomendaciones" name="recomendaciones" rows="2" class="rounded-xl" placeholder="Ej: Iniciar plan de entrenamiento progresivo"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-4">
+                <button type="submit" id="submitBtn" class="button button-primary flex-1">Guardar Deportista</button>
+                <button type="button" id="cancelBtn" class="button button-secondary flex-1 hidden">Cancelar Edición</button>
+            </div>
+        </form>
+
+        <!-- Área para mostrar la lista de deportistas guardados -->
+        <div id="deportistasList" class="mt-8 p-6 bg-gray-50 rounded-2xl">
+            <h2 class="text-2xl font-semibold mb-4">Deportistas Guardados</h2>
+            <div id="deportistasContent">
+                <p class="text-gray-500 text-center">Cargando deportistas...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de confirmación para eliminar -->
+    <div id="confirmationModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white p-6 rounded-lg shadow-lg text-center max-w-sm mx-auto">
+            <p class="mb-4 text-lg">¿Estás seguro de que deseas eliminar esta ficha?</p>
+            <div class="flex justify-center space-x-4">
+                <button id="confirmDeleteBtn" class="button button-danger">Eliminar</button>
+                <button id="cancelDeleteBtn" class="button button-secondary">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+    // --- IndexedDB helpers ---
+    const DB_NAME = 'fichaDeportivaDB';
+    const STORE_NAME = 'deportistas';
+    let db;
+
+    function openDB() {
+        return new Promise((resolve, reject) => {
+            const request = indexedDB.open(DB_NAME, 1);
+            request.onerror = () => reject(request.error);
+            request.onsuccess = () => {
+                db = request.result;
+                resolve(db);
+            };
+            request.onupgradeneeded = () => {
+                db = request.result;
+                if (!db.objectStoreNames.contains(STORE_NAME)) {
+                    db.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
+                }
+            };
+        });
+    }
+
+    function addDeportista(data) {
+        return new Promise((resolve, reject) => {
+            const tx = db.transaction(STORE_NAME, 'readwrite');
+            const store = tx.objectStore(STORE_NAME);
+            const req = store.add(data);
+            req.onsuccess = () => resolve(req.result);
+            req.onerror = () => reject(req.error);
+        });
+    }
+
+    function getAllDeportistas() {
+        return new Promise((resolve, reject) => {
+            const tx = db.transaction(STORE_NAME, 'readonly');
+            const store = tx.objectStore(STORE_NAME);
+            const req = store.getAll();
+            req.onsuccess = () => resolve(req.result);
+            req.onerror = () => reject(req.error);
+        });
+    }
+
+    function updateDeportista(id, data) {
+        return new Promise((resolve, reject) => {
+            const tx = db.transaction(STORE_NAME, 'readwrite');
+            const store = tx.objectStore(STORE_NAME);
+            data.id = id;
+            const req = store.put(data);
+            req.onsuccess = () => resolve();
+            req.onerror = () => reject(req.error);
+        });
+    }
+
+    function deleteDeportista(id) {
+        return new Promise((resolve, reject) => {
+            const tx = db.transaction(STORE_NAME, 'readwrite');
+            const store = tx.objectStore(STORE_NAME);
+            const req = store.delete(id);
+            req.onsuccess = () => resolve();
+            req.onerror = () => reject(req.error);
+        });
+    }
+
+    // --- UI Logic (adapted) ---
+    let lesionCount = 0;
+    let cirugiaCount = 0;
+    let deportistaToDeleteId = null;
+
+    const form = document.getElementById('deportistaForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const editingDeportistaIdInput = document.getElementById('editingDeportistaId');
+    const addLesionBtn = document.getElementById('addLesionBtn');
+    const lesionesContainer = document.getElementById('lesionesContainer');
+    const addCirugiaBtn = document.getElementById('addCirugiaBtn');
+    const cirugiasContainer = document.getElementById('cirugiasContainer');
+    const deportistasContent = document.getElementById('deportistasContent');
+    const confirmationModal = document.getElementById('confirmationModal');
+    const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+    const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+
+    form.addEventListener('submit', handleFormSubmit);
+    cancelBtn.addEventListener('click', resetForm);
+
+    // Evitar submit con Enter en cualquier campo del formulario
+    form.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
+            e.preventDefault();
+        }
+    });
+
+    async function handleFormSubmit(e) {
+        e.preventDefault();
+        const deportistaData = buildDeportistaData();
+        const editingId = editingDeportistaIdInput.value;
+        try {
+            if (editingId) {
+                await updateDeportista(Number(editingId), deportistaData);
+            } else {
+                await addDeportista(deportistaData);
+            }
+            resetForm();
+            renderDeportistas();
+        } catch (error) {
+            alert("Error al guardar: " + error);
+        }
+    }
+
+    function createLesionFields(index, data = {}) {
+        const { fecha = '', zona = '', descripcion = '' } = data;
+        const div = document.createElement('div');
+        div.className = 'p-4 bg-gray-100 rounded-lg border border-gray-200 relative';
+        div.innerHTML = `
+            <button type="button" class="absolute top-2 right-2 text-red-600 font-bold text-lg remove-lesion-btn" title="Eliminar lesión" data-index="${index}">&times;</button>
+            <h4 class="text-md font-semibold mb-2">Lesión ${index + 1}</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div><label for="fechaLesion${index}" class="block mb-1 text-sm">Fecha</label><input type="date" id="fechaLesion${index}" value="${fecha}" class="rounded-xl"></div>
+                <div><label for="zonaLesion${index}" class="block mb-1 text-sm">Zona</label><input type="text" id="zonaLesion${index}" name="zonaLesion${index}" value="${zona}" class="rounded-xl"></div>
+            </div>
+            <div class="mt-2"><label for="descripcionLesion${index}" class="block mb-1 text-sm">Descripción</label><textarea id="descripcionLesion${index}" name="descripcionLesion${index}" rows="2" class="rounded-xl">${descripcion}</textarea></div>
+        `;
+        lesionesContainer.appendChild(div);
+
+        // Botón eliminar
+        div.querySelector('.remove-lesion-btn').onclick = function() {
+            div.remove();
+            updateLesionIndices();
+        };
+    }
+
+    function createCirugiaFields(index, data = {}) {
+        const { fecha = '', motivo = '' } = data;
+        const div = document.createElement('div');
+        div.className = 'p-4 bg-gray-100 rounded-lg border border-gray-200 relative';
+        div.innerHTML = `
+            <button type="button" class="absolute top-2 right-2 text-red-600 font-bold text-lg remove-cirugia-btn" title="Eliminar cirugía" data-index="${index}">&times;</button>
+            <h4 class="text-md font-semibold mb-2">Cirugía ${index + 1}</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                 <div><label for="fechaCirugia${index}" class="block mb-1 text-sm">Fecha</label><input type="date" id="fechaCirugia${index}" value="${fecha}" class="rounded-xl"></div>
+                 <div><label for="motivoCirugia${index}" class="block mb-1 text-sm">Motivo</label><input type="text" id="motivoCirugia${index}" name="motivoCirugia${index}" value="${motivo}" class="rounded-xl"></div>
+            </div>
+        `;
+        cirugiasContainer.appendChild(div);
+
+        // Botón eliminar
+        div.querySelector('.remove-cirugia-btn').onclick = function() {
+            div.remove();
+            updateCirugiaIndices();
+        };
+    }
+
+    // Actualiza los índices y los atributos id/name de los campos de lesiones
+    function updateLesionIndices() {
+        const lesionDivs = lesionesContainer.querySelectorAll('.p-4.bg-gray-100');
+        lesionDivs.forEach((div, i) => {
+            div.querySelector('h4').textContent = `Lesión ${i + 1}`;
+            div.querySelector('.remove-lesion-btn').setAttribute('data-index', i);
+            div.querySelector('input[type="date"]').id = `fechaLesion${i}`;
+            div.querySelector('input[type="text"]').id = `zonaLesion${i}`;
+            div.querySelector('input[type="text"]').name = `zonaLesion${i}`;
+            div.querySelector('textarea').id = `descripcionLesion${i}`;
+            div.querySelector('textarea').name = `descripcionLesion${i}`;
+        });
+        lesionCount = lesionDivs.length;
+    }
+
+    // Actualiza los índices y los atributos id/name de los campos de cirugías
+    function updateCirugiaIndices() {
+        const cirugiaDivs = cirugiasContainer.querySelectorAll('.p-4.bg-gray-100');
+        cirugiaDivs.forEach((div, i) => {
+            div.querySelector('h4').textContent = `Cirugía ${i + 1}`;
+            div.querySelector('.remove-cirugia-btn').setAttribute('data-index', i);
+            div.querySelector('input[type="date"]').id = `fechaCirugia${i}`;
+            div.querySelector('input[type="text"]').id = `motivoCirugia${i}`;
+            div.querySelector('input[type="text"]').name = `motivoCirugia${i}`;
+        });
+        cirugiaCount = cirugiaDivs.length;
+    }
+
+    // Modifica buildDeportistaData para leer solo los campos que existen actualmente
+    function buildDeportistaData() {
+        const data = {
+            nombre: form.nombre.value,
+            fechaNacimiento: form.fechaNacimiento.value,
+            telefono: form.telefono.value,
+            email: form.email.value,
+            nombreEmergencia: form.nombreEmergencia.value,
+            telefonoEmergencia: form.telefonoEmergencia.value,
+            altura: form.altura.value,
+            peso: form.peso.value,
+            posicion: form.posicion.value,
+            condicionFisica: form.condicionFisica.value,
+            rendimientoReciente: form.rendimientoReciente.value,
+            objetivosDeportivos: form.objetivosDeportivos.value,
+            alergias: form.alergias.value,
+            vacunas: form.vacunas.value,
+            enfermedadesCronicas: form.enfermedadesCronicas.value,
+            medicamentosActuales: form.medicamentosActuales.value,
+            habitos: form.habitos.value,
+            cirugias: [],
+            lesiones: [],
+            estadoGeneral: form.estadoGeneral.value,
+            examenCardiologico: form.examenCardiologico.value,
+            examenOsteoArticular: form.examenOsteoArticular.value,
+            diagnosticoMedico: form.diagnosticoMedico.value,
+            recomendaciones: form.recomendaciones.value,
+            updatedAt: new Date().toISOString()
+        };
+        // Lesiones
+        const lesionDivs = lesionesContainer.querySelectorAll('.p-4.bg-gray-100');
+        lesionDivs.forEach((div, i) => {
+            const fecha = div.querySelector(`input[type="date"]`)?.value;
+            const zona = div.querySelector(`input[type="text"]`)?.value;
+            const descripcion = div.querySelector(`textarea`)?.value;
+            if (fecha || zona || descripcion) data.lesiones.push({ fecha, zona, descripcion });
+        });
+        // Cirugías
+        const cirugiaDivs = cirugiasContainer.querySelectorAll('.p-4.bg-gray-100');
+        cirugiaDivs.forEach((div, i) => {
+            const fecha = div.querySelector(`input[type="date"]`)?.value;
+            const motivo = div.querySelector(`input[type="text"]`)?.value;
+            if (fecha || motivo) data.cirugias.push({ fecha, motivo });
+        });
+        return data;
+    }
+
+    // Corrige el formateo de fecha para evitar desfase
+    function formatearFecha(fecha) {
+        if (!fecha) return 'N/A';
+        // fecha es 'YYYY-MM-DD'
+        const [anio, mes, dia] = fecha.split('-');
+        if (!anio || !mes || !dia) return 'N/A';
+        return `${dia}-${mes}-${anio}`;
+    }
+
+    deportistasContent.addEventListener('click', (e) => {
+        const target = e.target.closest('button');
+        if (!target) return;
+        const id = target.dataset.id;
+        if (target.classList.contains('modify-btn')) {
+            startEditing(id);
+        } else if (target.classList.contains('delete-btn')) {
+            deportistaToDeleteId = id;
+            confirmationModal.classList.remove('hidden');
+        }
+    });
+
+    async function startEditing(id) {
+        try {
+            const tx = db.transaction(STORE_NAME, 'readonly');
+            const store = tx.objectStore(STORE_NAME);
+            const req = store.get(Number(id));
+            req.onsuccess = () => {
+                const deportista = req.result;
+                if (!deportista) return;
+                Object.keys(deportista).forEach(key => {
+                    const el = form.elements[key];
+                    if (el) el.value = deportista[key];
+                });
+
+                // Lesiones
+                resetDynamicFields(lesionesContainer, 'C. Historial de Lesiones', createLesionFields);
+                lesionesContainer.innerHTML = `<h3 class="text-lg font-semibold">C. Historial de Lesiones</h3>`;
+                lesionCount = 0;
+                if (deportista.lesiones && deportista.lesiones.length > 0) {
+                    deportista.lesiones.forEach(item => { createLesionFields(lesionCount, item); lesionCount++; });
+                } else {
+                    createLesionFields(0);
+                    lesionCount = 1;
+                }
+
+                // Cirugías
+                resetDynamicFields(cirugiasContainer, 'B. Cirugías Previas', createCirugiaFields);
+                cirugiasContainer.innerHTML = `<h3 class="text-lg font-semibold">B. Cirugías Previas</h3>`;
+                cirugiaCount = 0;
+                if (deportista.cirugias && deportista.cirugias.length > 0) {
+                    deportista.cirugias.forEach(item => { createCirugiaFields(cirugiaCount, item); cirugiaCount++; });
+                } else {
+                    createCirugiaFields(0);
+                    cirugiaCount = 1;
+                }
+
+                editingDeportistaIdInput.value = id;
+                submitBtn.textContent = 'Actualizar Deportista';
+                cancelBtn.classList.remove('hidden');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            };
+        } catch (error) {
+            alert("Error al cargar datos para editar: " + error);
+        }
+    }
+
+    confirmDeleteBtn.addEventListener('click', async () => {
+        if (deportistaToDeleteId) {
+            try {
+                await deleteDeportista(Number(deportistaToDeleteId));
+                renderDeportistas();
+            } catch (error) {
+                alert("Error al eliminar deportista: " + error);
+            } finally {
+                deportistaToDeleteId = null;
+                confirmationModal.classList.add('hidden');
+            }
+        }
+    });
+    cancelDeleteBtn.addEventListener('click', () => {
+        deportistaToDeleteId = null;
+        confirmationModal.classList.add('hidden');
+    });
+
+    async function renderDeportistas() {
+        const deportistas = await getAllDeportistas();
+        if (deportistas.length === 0) {
+            deportistasContent.innerHTML = `<p class="text-gray-500 text-center">No hay deportistas guardados aún.</p>`;
+            return;
+        }
+        deportistas.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+        deportistasContent.innerHTML = deportistas.map(d => renderSingleDeportista(d)).join('');
+    }
+
+    function renderSingleDeportista(d) {
+        // Calcular edad
+        function calcularEdad(fechaNacimiento) {
+            if (!fechaNacimiento) return 'N/A';
+            const hoy = new Date();
+            const nacimiento = new Date(fechaNacimiento);
+            let edad = hoy.getFullYear() - nacimiento.getFullYear();
+            const m = hoy.getMonth() - nacimiento.getMonth();
+            if (m < 0 || (m === 0 && hoy.getDate() < nacimiento.getDate())) {
+                edad--;
+            }
+            return edad;
+        }
+
+        const imc = (d.altura > 0 && d.peso > 0) ? (d.peso / ((d.altura/100)**2)).toFixed(2) : 'N/A';
+
+        // Render listas con fecha destacada
+        const renderList = (items, type) => {
+            if (!items || items.length === 0) return `<li>No se han registrado ${type}.</li>`;
+            return items.map(item => `
+                <li>
+                    <span class="font-semibold">${item.zona || item.motivo || 'N/A'}</span>
+                    ${item.descripcion ? `- ${item.descripcion}` : ''}
+                    <span class="ml-2 px-2 py-0.5 rounded text-white bg-blue-700 font-bold text-xs align-middle">${formatearFecha(item.fecha)}</span>
+                </li>
+            `).join('');
+        };
+
+        return `
+            <div class="p-6 my-4 bg-white rounded-xl shadow-md border border-gray-200 space-y-3">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="text-xl font-bold text-blue-800">${d.nombre || 'S/N'}</h3>
+                        <p class="text-sm text-blue-700 font-semibold">${d.fechaNacimiento ? calcularEdad(d.fechaNacimiento) + ' años' : ''}</p>
+                    </div>
+                    <div class="flex space-x-2">
+                         <button class="button button-secondary text-xs modify-btn" data-id="${d.id}">Modificar</button>
+                         <button class="button button-danger text-xs delete-btn" data-id="${d.id}">Eliminar</button>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-bold text-gray-700">Datos Personales</h4>
+                    <p class="text-sm text-gray-600"><span class="font-semibold">Tel:</span> ${d.telefono || 'N/A'}</p>
+                    <p class="text-sm text-gray-600"><span class="font-semibold">Email:</span> ${d.email || 'N/A'}</p>
+                    <p class="text-sm text-gray-600"><span class="font-semibold">Emergencia:</span> ${d.nombreEmergencia || 'N/A'} (${d.telefonoEmergencia || 'N/A'})</p>
+                </div>
+                <div>
+                   <h4 class="font-bold text-gray-700 mt-2">Datos Físicos y Deportivos</h4>
+                   <p class="text-sm text-gray-600"><span class="font-semibold">Físico:</span> ${d.altura || 'N/A'}cm, ${d.peso || 'N/A'}kg, IMC: ${imc}</p>
+                   <p class="text-sm text-gray-600"><span class="font-semibold">Posición:</span> ${d.posicion || 'N/A'}</p>
+                   <p class="text-sm text-gray-600"><span class="font-semibold">Condición:</span> ${d.condicionFisica || 'N/A'}</p>
+                   <p class="text-sm text-gray-600"><span class="font-semibold">Rendimiento:</span> ${d.rendimientoReciente || 'N/A'}</p>
+                   <p class="text-sm text-gray-600"><span class="font-semibold">Objetivos:</span> ${d.objetivosDeportivos || 'N/A'}</p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-gray-700 mt-2">Historia Clínica</h4>
+                    <p class="text-sm text-gray-600"><span class="font-semibold">Alergias:</span> ${d.alergias || 'Ninguna'}</p>
+                    <h5 class="font-semibold text-gray-700 mt-2">Cirugías:</h5>
+                    <ul class="list-disc list-inside text-sm text-gray-600">${renderList(d.cirugias, 'cirugías')}</ul>
+                    <h5 class="font-semibold text-gray-700 mt-2">Lesiones:</h5>
+                    <ul class="list-disc list-inside text-sm text-gray-600">${renderList(d.lesiones, 'lesiones')}</ul>
+                </div>
+                <div>
+                   <h4 class="font-bold text-gray-700 mt-2">Diagnóstico</h4>
+                   <p class="text-sm text-gray-600"><span class="font-semibold">Médico:</span> ${d.diagnosticoMedico || 'N/A'}</p>
+                   <p class="text-sm text-gray-600"><span class="font-semibold">Recomendaciones:</span> ${d.recomendaciones || 'N/A'}</p>
+                </div>
+            </div>`;
+    }
+
+    function resetDynamicFields(container, title, createFn) {
+    container.innerHTML = `<h3 class="text-lg font-semibold">${title}</h3>`;
+    createFn(0);
+}
+
+function setupDynamicFields() {
+    addLesionBtn.addEventListener('click', () => { createLesionFields(lesionCount); lesionCount++; });
+    addCirugiaBtn.addEventListener('click', () => { createCirugiaFields(cirugiaCount); cirugiaCount++; });
+    resetForm();
+}
+
+function resetForm() {
+    form.reset();
+    editingDeportistaIdInput.value = '';
+    submitBtn.textContent = 'Guardar Deportista';
+    cancelBtn.classList.add('hidden');
+    resetDynamicFields(lesionesContainer, 'C. Historial de Lesiones', createLesionFields);
+    lesionCount = 1;
+    resetDynamicFields(cirugiasContainer, 'B. Cirugías Previas', createCirugiaFields);
+    cirugiaCount = 1;
+}
+
+    window.onload = async function() {
+        await openDB();
+        setupDynamicFields();
+        renderDeportistas();
+    };
+</script>
+</body>
+</html>
+
