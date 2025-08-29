@@ -222,11 +222,13 @@
     // --- Firebase config ---
     // Pega aquí tu configuración de Firebase
     const firebaseConfig = {
-        apiKey: "TU_API_KEY",
-        authDomain: "TU_AUTH_DOMAIN",
-        projectId: "TU_PROJECT_ID",
-        // ...otros datos...
-    };
+  apiKey: "AIzaSyDxbaXZMSqA5X0UuGTKcw8QjTIfAGsZ3kg",
+  authDomain: "ficha-deportistas.firebaseapp.com",
+  projectId: "ficha-deportistas",
+  storageBucket: "ficha-deportistas.firebasestorage.app",
+  messagingSenderId: "923755222459",
+  appId: "1:923755222459:web:2e1d1160d486dc15c4a09e"
+};
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
