@@ -25,6 +25,16 @@
         .button-danger:hover { background-color: #b91c1c;}
         .rotate-90 { transform: rotate(90deg);}
         .transition-transform { transition: transform 0.2s;}
+        /* Notificación flotante */
+        #floatingNotification {
+            position: fixed;
+            top: 32px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            min-width: 220px;
+            display: none;
+        }
     </style>
     <!-- Firebase scripts -->
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -34,6 +44,18 @@
 <body class="bg-gray-100 p-6">
     <div class="container mx-auto p-8 bg-white rounded-3xl shadow-lg">
         <h1 class="text-3xl font-bold text-center mb-6">Ficha del Deportista</h1>
+        <div id="statusMessage" class="text-center mb-4 hidden"></div>
+        <!-- Notificación flotante -->
+        <div id="floatingNotification" class="bg-green-600 text-white px-6 py-3 rounded-xl shadow-lg text-lg font-semibold"></div>
+        <div id="customConfirmModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-white p-6 rounded-lg shadow-lg text-center max-w-sm mx-auto">
+                <p id="customConfirmText" class="mb-4 text-lg"></p>
+                <div class="flex justify-center space-x-4">
+                    <button id="customConfirmYes" class="button button-danger">Sí</button>
+                    <button id="customConfirmNo" class="button button-secondary">No</button>
+                </div>
+            </div>
+        </div>
         <p id="userIdDisplay" class="text-sm text-center text-gray-500 mb-6 hidden"></p>
 
         <!-- Login/Register -->
@@ -204,7 +226,7 @@
             </div>
         </div>
     </div>
-    <!-- Modal de confirmación para eliminar -->
+    <!-- Modal de confirmación para eliminar (no se usa, pero se deja por si quieres mantenerlo) -->
     <div id="confirmationModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
         <div class="bg-white p-6 rounded-lg shadow-lg text-center max-w-sm mx-auto">
             <p class="mb-4 text-lg">¿Estás seguro de que deseas eliminar esta ficha?</p>
@@ -236,6 +258,48 @@
     const deportistaForm = document.getElementById('deportistaForm');
     const deportistasList = document.getElementById('deportistasList');
     const userIdDisplay = document.getElementById('userIdDisplay');
+    const statusDiv = document.getElementById('statusMessage');
+
+    // Modal de confirmación personalizada
+    function customConfirm(message) {
+        return new Promise((resolve) => {
+            const modal = document.getElementById('customConfirmModal');
+            const text = document.getElementById('customConfirmText');
+            const yesBtn = document.getElementById('customConfirmYes');
+            const noBtn = document.getElementById('customConfirmNo');
+            text.textContent = message;
+            modal.classList.remove('hidden');
+            function cleanup(result) {
+                modal.classList.add('hidden');
+                yesBtn.removeEventListener('click', onYes);
+                noBtn.removeEventListener('click', onNo);
+                resolve(result);
+            }
+            function onYes() { cleanup(true); }
+            function onNo() { cleanup(false); }
+            yesBtn.addEventListener('click', onYes);
+            noBtn.addEventListener('click', onNo);
+        });
+    }
+
+    function showStatusMessage(msg, type = "success", duration = 2000) {
+        statusDiv.textContent = msg;
+        statusDiv.className = `text-center mb-4 ${type === "success" ? "text-green-700 bg-green-100" : "text-red-700 bg-red-100"} py-2 rounded-xl`;
+        statusDiv.classList.remove('hidden');
+        setTimeout(() => {
+            statusDiv.classList.add('hidden');
+        }, duration);
+    }
+
+    function showFloatingNotification(msg, type = "success", duration = 2000) {
+        const notif = document.getElementById('floatingNotification');
+        notif.textContent = msg;
+        notif.className = `bg-${type === "success" ? "green" : "red"}-600 text-white px-6 py-3 rounded-xl shadow-lg text-lg font-semibold`;
+        notif.style.display = "block";
+        setTimeout(() => {
+            notif.style.display = "none";
+        }, duration);
+    }
 
     function showLogin() {
         loginContainer.style.display = '';
@@ -270,18 +334,18 @@
         try {
             await auth.signInWithEmailAndPassword(email, password);
         } catch (err) {
-            alert('Error de login: ' + err.message);
+            showStatusMessage('Error de login: ' + err.message, "error", 4000);
         }
     });
     registerBtn.addEventListener('click', async () => {
         const email = document.getElementById('loginEmail').value;
         const password = document.getElementById('loginPassword').value;
-        if (!email || !password) return alert('Completa email y contraseña');
+        if (!email || !password) return showStatusMessage('Completa email y contraseña', "error", 3000);
         try {
             await auth.createUserWithEmailAndPassword(email, password);
-            alert('Usuario registrado. Ya puedes usar la app.');
+            showStatusMessage('Usuario registrado. Ya puedes usar la app.');
         } catch (err) {
-            alert('Error al registrar: ' + err.message);
+            showStatusMessage('Error al registrar: ' + err.message, "error", 4000);
         }
     });
     logoutBtn.addEventListener('click', () => auth.signOut());
@@ -338,14 +402,18 @@
         const editingId = editingDeportistaIdInput.value;
         try {
             if (editingId) {
+                const ok = await customConfirm("¿Deseas modificar este jugador?");
+                if (!ok) return showStatusMessage("Modificación cancelada.", "error");
                 await updateDeportista(editingId, deportistaData);
+                showFloatingNotification("¡Jugador modificado correctamente!");
             } else {
                 await addDeportista(deportistaData);
+                showFloatingNotification("¡Jugador guardado correctamente!");
             }
             resetForm();
-            renderDeportistas();
+            setTimeout(renderDeportistas, 1200);
         } catch (error) {
-            alert("Error al guardar: " + error);
+            showStatusMessage("Error al guardar: " + error, "error", 4000);
         }
     }
 
@@ -498,10 +566,32 @@
             startEditing(id);
         } else if (target.classList.contains('delete-btn')) {
             deportistaToDeleteId = id;
-            confirmationModal.classList.remove('hidden');
+            customConfirm("¿Deseas eliminar este jugador?").then(ok => {
+                if (ok) {
+                    deleteDeportista(deportistaToDeleteId)
+                        .then(() => {
+                            showFloatingNotification("¡Jugador eliminado correctamente!");
+                            setTimeout(renderDeportistas, 1200);
+                        })
+                        .catch(error => {
+                            showStatusMessage("Error al eliminar deportista: " + error, "error", 4000);
+                        })
+                        .finally(() => {
+                            deportistaToDeleteId = null;
+                        });
+                } else {
+                    deportistaToDeleteId = null;
+                    showStatusMessage("Eliminación cancelada.", "error");
+                }
+            });
         }
     });
     async function startEditing(id) {
+        const ok = await customConfirm("¿Deseas editar este jugador?");
+        if (!ok) {
+            showStatusMessage("Edición cancelada.", "error");
+            return;
+        }
         try {
             const deportista = await getDeportista(id);
             if (!deportista) return;
@@ -533,94 +623,10 @@
             submitBtn.textContent = 'Actualizar Deportista';
             cancelBtn.classList.remove('hidden');
             window.scrollTo({ top: 0, behavior: 'smooth' });
+            showStatusMessage("Modo edición activado.", "success", 1500);
         } catch (error) {
-            alert("Error al cargar datos para editar: " + error);
+            showStatusMessage("Error al cargar datos para editar: " + error, "error", 4000);
         }
-    }
-    confirmDeleteBtn.addEventListener('click', async () => {
-        if (deportistaToDeleteId) {
-            try {
-                await deleteDeportista(deportistaToDeleteId);
-                renderDeportistas();
-            } catch (error) {
-                alert("Error al eliminar deportista: " + error);
-            } finally {
-                deportistaToDeleteId = null;
-                confirmationModal.classList.add('hidden');
-            }
-        }
-    });
-    cancelDeleteBtn.addEventListener('click', () => {
-        deportistaToDeleteId = null;
-        confirmationModal.classList.add('hidden');
-    });
-    async function renderDeportistas() {
-        const deportistas = await getAllDeportistas();
-        if (deportistas.length === 0) {
-            deportistasContent.innerHTML = `<p class="text-gray-500 text-center">No hay deportistas guardados aún.</p>`;
-            return;
-        }
-        deportistas.sort((a, b) => {
-            const apA = (a.apellido || '').toLowerCase();
-            const apB = (b.apellido || '').toLowerCase();
-            if (apA < apB) return -1;
-            if (apA > apB) return 1;
-            return 0;
-        });
-        deportistasContent.innerHTML = deportistas.map(d => renderSingleDeportista(d)).join('');
-    }
-    function renderSingleDeportista(d) {
-        const fichaId = `ficha-${d.id}`;
-        const nombreCompleto = `${d.apellido || ''}, ${d.nombre || ''}`;
-        const imc = (d.altura > 0 && d.peso > 0) ? (d.peso / ((d.altura/100)**2)).toFixed(2) : 'N/A';
-        return `
-    <div class="deportista-ficha border rounded mb-2 overflow-hidden">
-        <div class="ficha-header bg-blue-100 cursor-pointer flex justify-between items-center px-4 py-2" data-ficha="${fichaId}">
-            <span class="font-bold text-blue-900">${nombreCompleto}</span>
-            <span class="expand-icon transition-transform ml-2">&#9654;</span>
-        </div>
-        <div id="${fichaId}" class="ficha-body hidden bg-white px-4 pb-4">
-            <div class="p-6 my-4 bg-white rounded-xl shadow-md border border-gray-200 space-y-3">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <h3 class="text-xl font-bold text-blue-800">${nombreCompleto}</h3>
-                        <p class="text-sm text-blue-700 font-semibold">${d.fechaNacimiento ? calcularEdad(d.fechaNacimiento) + ' años' : ''}</p>
-                    </div>
-                    <div class="flex space-x-2">
-                         <button class="button button-secondary text-xs modify-btn" data-id="${d.id}">Modificar</button>
-                         <button class="button button-danger text-xs delete-btn" data-id="${d.id}">Eliminar</button>
-                    </div>
-                </div>
-                <div>
-                    <h4 class="font-bold text-gray-700">Datos Personales</h4>
-                    <p class="text-sm text-gray-600"><span class="font-semibold">Tel:</span> ${d.telefono || 'N/A'}</p>
-                    <p class="text-sm text-gray-600"><span class="font-semibold">Email:</span> ${d.email || 'N/A'}</p>
-                    <p class="text-sm text-gray-600"><span class="font-semibold">Emergencia:</span> ${d.nombreEmergencia || 'N/A'} (${d.telefonoEmergencia || 'N/A'})</p>
-                </div>
-                <div>
-                   <h4 class="font-bold text-gray-700 mt-2">Datos Físicos y Deportivos</h4>
-                   <p class="text-sm text-gray-600"><span class="font-semibold">Físico:</span> ${d.altura || 'N/A'}cm, ${d.peso || 'N/A'}kg, IMC: ${imc}</p>
-                   <p class="text-sm text-gray-600"><span class="font-semibold">Posición:</span> ${d.posicion || 'N/A'}</p>
-                   <p class="text-sm text-gray-600"><span class="font-semibold">Condición:</span> ${d.condicionFisica || 'N/A'}</p>
-                   <p class="text-sm text-gray-600"><span class="font-semibold">Rendimiento:</span> ${d.rendimientoReciente || 'N/A'}</p>
-                   <p class="text-sm text-gray-600"><span class="font-semibold">Objetivos:</span> ${d.objetivosDeportivos || 'N/A'}</p>
-                </div>
-                <div>
-                    <h4 class="font-bold text-gray-700 mt-2">Historia Clínica</h4>
-                    <p class="text-sm text-gray-600"><span class="font-semibold">Alergias:</span> ${d.alergias || 'Ninguna'}</p>
-                    <h5 class="font-semibold text-gray-700 mt-2">Cirugías:</h5>
-                    <ul class="list-disc list-inside text-sm text-gray-600">${renderList(d.cirugias, 'cirugías')}</ul>
-                    <h5 class="font-semibold text-gray-700 mt-2">Lesiones:</h5>
-                    <ul class="list-disc list-inside text-sm text-gray-600">${renderList(d.lesiones, 'lesiones')}</ul>
-                </div>
-                <div>
-                   <h4 class="font-bold text-gray-700 mt-2">Diagnóstico</h4>
-                   <p class="text-sm text-gray-600"><span class="font-semibold">Médico:</span> ${d.diagnosticoMedico || 'N/A'}</p>
-                   <p class="text-sm text-gray-600"><span class="font-semibold">Recomendaciones:</span> ${d.recomendaciones || 'N/A'}</p>
-                </div>
-            </div>
-        </div>
-    </div>`;
     }
     function resetDynamicFields(container, title, createFn) {
         container.innerHTML = `<h3 class="text-lg font-semibold">${title}</h3>`;
@@ -640,6 +646,91 @@
         lesionCount = 1;
         resetDynamicFields(cirugiasContainer, 'B. Cirugías Previas', createCirugiaFields);
         cirugiaCount = 1;
+    }
+    function renderSingleDeportista(d) {
+        const fichaId = `ficha-${d.id}`;
+        const nombreCompleto = `${d.apellido || ''}, ${d.nombre || ''}`;
+        const imc = (d.altura > 0 && d.peso > 0) ? (d.peso / ((d.altura/100)**2)).toFixed(2) : 'N/A';
+
+        function showField(label, value) {
+            if (!value) return '';
+            return `<p class="text-sm text-gray-600"><span class="font-semibold">${label}:</span> ${value}</p>`;
+        }
+
+        return `
+    <div class="deportista-ficha border rounded mb-2 overflow-hidden">
+        <div class="ficha-header bg-blue-100 cursor-pointer flex justify-between items-center px-4 py-2" data-ficha="${fichaId}">
+            <span class="font-bold text-blue-900">${nombreCompleto}</span>
+            <span class="expand-icon transition-transform ml-2">&#9654;</span>
+        </div>
+        <div id="${fichaId}" class="ficha-body hidden bg-white px-4 pb-4">
+            <div class="p-6 my-4 bg-white rounded-xl shadow-md border border-gray-200 space-y-3">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="text-xl font-bold text-blue-800">${nombreCompleto}</h3>
+                        ${showField('Edad', d.fechaNacimiento ? calcularEdad(d.fechaNacimiento) + ' años' : '')}
+                    </div>
+                    <div class="flex space-x-2">
+                         <button class="button button-secondary text-xs modify-btn" data-id="${d.id}">Modificar</button>
+                         <button class="button button-danger text-xs delete-btn" data-id="${d.id}">Eliminar</button>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-bold text-gray-700">Datos Personales</h4>
+                    ${showField('Teléfono', d.telefono)}
+                    ${showField('Email', d.email)}
+                    ${showField('Contacto de emergencia', d.nombreEmergencia)}
+                    ${showField('Teléfono de emergencia', d.telefonoEmergencia)}
+                    ${showField('Fecha de nacimiento', d.fechaNacimiento)}
+                </div>
+                <div>
+                   <h4 class="font-bold text-gray-700 mt-2">Datos Físicos y Deportivos</h4>
+                   ${showField('Altura', d.altura ? d.altura + ' cm' : '')}
+                   ${showField('Peso', d.peso ? d.peso + ' kg' : '')}
+                   ${showField('IMC', imc !== 'N/A' ? imc : '')}
+                   ${showField('Posición', d.posicion)}
+                   ${showField('Condición física', d.condicionFisica)}
+                   ${showField('Rendimiento reciente', d.rendimientoReciente)}
+                   ${showField('Objetivos deportivos', d.objetivosDeportivos)}
+                </div>
+                <div>
+                    <h4 class="font-bold text-gray-700 mt-2">Historia Clínica</h4>
+                    ${showField('Alergias', d.alergias)}
+                    ${showField('Vacunas', d.vacunas)}
+                    ${showField('Enfermedades crónicas', d.enfermedadesCronicas)}
+                    ${showField('Medicamentos actuales', d.medicamentosActuales)}
+                    ${showField('Hábitos', d.habitos)}
+                    <h5 class="font-semibold text-gray-700 mt-2">Cirugías:</h5>
+                    <ul class="list-disc list-inside text-sm text-gray-600">${renderList(d.cirugias, 'cirugías')}</ul>
+                    <h5 class="font-semibold text-gray-700 mt-2">Lesiones:</h5>
+                    <ul class="list-disc list-inside text-sm text-gray-600">${renderList(d.lesiones, 'lesiones')}</ul>
+                </div>
+                <div>
+                   <h4 class="font-bold text-gray-700 mt-2">Diagnóstico</h4>
+                   ${showField('Estado general', d.estadoGeneral)}
+                   ${showField('Examen cardiológico', d.examenCardiologico)}
+                   ${showField('Examen osteo-articular', d.examenOsteoArticular)}
+                   ${showField('Diagnóstico médico', d.diagnosticoMedico)}
+                   ${showField('Recomendaciones', d.recomendaciones)}
+                </div>
+            </div>
+        </div>
+    </div>`;
+    }
+    async function renderDeportistas() {
+        const deportistas = await getAllDeportistas();
+        if (deportistas.length === 0) {
+            deportistasContent.innerHTML = `<p class="text-gray-500 text-center">No hay deportistas guardados aún.</p>`;
+            return;
+        }
+        deportistas.sort((a, b) => {
+            const apA = (a.apellido || '').toLowerCase();
+            const apB = (b.apellido || '').toLowerCase();
+            if (apA < apB) return -1;
+            if (apA > apB) return 1;
+            return 0;
+        });
+        deportistasContent.innerHTML = deportistas.map(d => renderSingleDeportista(d)).join('');
     }
     </script>
 </body>
