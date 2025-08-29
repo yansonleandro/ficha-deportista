@@ -4,89 +4,51 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ficha Deportiva</title>
-    <!-- Incluye Tailwind CSS para un diseño moderno y responsivo -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Estilo para la fuente Inter, que se ve limpia y moderna */
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6;
-            color: #1f2937;
-        }
-        /* Estilo para el contenedor principal de la ficha */
-        .container {
-            max-width: 800px;
-            margin: 2rem auto;
-            padding: 2rem;
-            background-color: #ffffff;
-            border-radius: 1.5rem; /* Bordes más redondeados */
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-        /* Estilo para los títulos de las secciones */
-        h2 {
-            border-bottom: 2px solid #e5e7eb;
-            padding-bottom: 0.5rem;
-            margin-bottom: 1.5rem;
-            color: #1f2937;
-        }
-        /* Estilo para las etiquetas de los campos */
-        label {
-            font-weight: 500;
-            color: #4b5563;
-        }
-        /* Estilo para los campos de entrada de texto */
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; color: #1f2937; }
+        .container { max-width: 800px; margin: 2rem auto; padding: 2rem; background-color: #ffffff; border-radius: 1.5rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);}
+        h2 { border-bottom: 2px solid #e5e7eb; padding-bottom: 0.5rem; margin-bottom: 1.5rem; color: #1f2937;}
+        label { font-weight: 500; color: #4b5563;}
         input[type="text"], input[type="date"], input[type="number"], input[type="email"], textarea, select {
-            width: 100%;
-            padding: 0.75rem;
-            border-radius: 0.75rem; /* Bordes redondeados */
-            border: 1px solid #d1d5db;
-            background-color: #f9fafb;
-            transition: all 0.2s ease-in-out;
+            width: 100%; padding: 0.75rem; border-radius: 0.75rem; border: 1px solid #d1d5db; background-color: #f9fafb; transition: all 0.2s ease-in-out;
         }
-        /* Estilo para el hover y focus de los campos */
         input[type="text"]:focus, input[type="date"]:focus, input[type="number"]:focus, input[type="email"]:focus, textarea:focus, select:focus {
-            outline: none;
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+            outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
         }
-        /* Estilo para los botones */
-        .button {
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            transition: background-color 0.2s;
-            cursor: pointer;
-            border: none;
-        }
-        .button-primary {
-             padding: 0.75rem 1.5rem;
-            border-radius: 0.75rem;
-            background-color: #1d4ed8;
-            color: #ffffff;
-        }
-        .button-primary:hover {
-            background-color: #1e40af;
-        }
-        .button-secondary {
-            background-color: #6b7280;
-            color: white;
-        }
-        .button-secondary:hover {
-            background-color: #4b5563;
-        }
-        .button-danger {
-            background-color: #dc2626;
-            color: white;
-        }
-        .button-danger:hover {
-            background-color: #b91c1c;
-        }
+        .button { padding: 0.5rem 1rem; border-radius: 0.5rem; font-weight: 600; transition: background-color 0.2s; cursor: pointer; border: none;}
+        .button-primary { padding: 0.75rem 1.5rem; border-radius: 0.75rem; background-color: #1d4ed8; color: #ffffff;}
+        .button-primary:hover { background-color: #1e40af;}
+        .button-secondary { background-color: #6b7280; color: white;}
+        .button-secondary:hover { background-color: #4b5563;}
+        .button-danger { background-color: #dc2626; color: white;}
+        .button-danger:hover { background-color: #b91c1c;}
     </style>
+    <!-- Firebase scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 </head>
 <body class="bg-gray-100 p-6">
     <div class="container mx-auto p-8 bg-white rounded-3xl shadow-lg">
         <h1 class="text-3xl font-bold text-center mb-6">Ficha del Deportista</h1>
         <p id="userIdDisplay" class="text-sm text-center text-gray-500 mb-6 hidden"></p>
+
+        <!-- Login/Register -->
+        <div id="loginContainer" class="container mx-auto p-8 bg-white rounded-3xl shadow-lg mb-8">
+            <h2 class="text-2xl font-bold mb-4">Iniciar Sesión</h2>
+            <form id="loginForm" class="space-y-4">
+                <input type="email" id="loginEmail" placeholder="Correo" class="rounded-xl w-full p-2 border" required>
+                <input type="password" id="loginPassword" placeholder="Contraseña" class="rounded-xl w-full p-2 border" required>
+                <div class="flex gap-2">
+                    <button type="submit" class="button button-primary flex-1">Entrar</button>
+                    <button type="button" id="registerBtn" class="button button-secondary flex-1">Registrarse</button>
+                </div>
+            </form>
+        </div>
+        <div class="flex justify-end mb-4">
+            <button id="logoutBtn" class="button button-secondary hidden">Cerrar sesión</button>
+        </div>
 
         <!-- Formulario de entrada de datos -->
         <form id="deportistaForm" class="space-y-6">
@@ -147,15 +109,15 @@
                         </select>
                     </div>
                 </div>
-                 <div class="mt-4">
+                <div class="mt-4">
                     <label for="condicionFisica" class="block mb-2 text-sm">Condición física</label>
                     <textarea id="condicionFisica" name="condicionFisica" rows="2" class="rounded-xl" placeholder="Resultados de pruebas de resistencia, fuerza, etc."></textarea>
                 </div>
-                 <div class="mt-4">
+                <div class="mt-4">
                     <label for="rendimientoReciente" class="block mb-2 text-sm">Rendimiento reciente</label>
                     <textarea id="rendimientoReciente" name="rendimientoReciente" rows="2" class="rounded-xl" placeholder="Mejores marcas, logros, competencias"></textarea>
                 </div>
-                 <div class="mt-4">
+                <div class="mt-4">
                     <label for="objetivosDeportivos" class="block mb-2 text-sm">Objetivos deportivos</label>
                     <textarea id="objetivosDeportivos" name="objetivosDeportivos" rows="2" class="rounded-xl" placeholder="Metas a corto, mediano y largo plazo"></textarea>
                 </div>
@@ -175,15 +137,15 @@
                         <input type="text" id="vacunas" name="vacunas" class="rounded-xl" placeholder="Esquema completo">
                     </div>
                 </div>
-                 <div class="mt-4">
+                <div class="mt-4">
                     <label for="enfermedadesCronicas" class="block mb-2 text-sm">Enfermedades crónicas</label>
                     <textarea id="enfermedadesCronicas" name="enfermedadesCronicas" rows="2" class="rounded-xl" placeholder="Asma, diabetes, etc."></textarea>
                 </div>
-                 <div class="mt-4">
+                <div class="mt-4">
                     <label for="medicamentosActuales" class="block mb-2 text-sm">Medicamentos actuales</label>
                     <textarea id="medicamentosActuales" name="medicamentosActuales" rows="2" class="rounded-xl" placeholder="Dosis y motivo"></textarea>
                 </div>
-                 <div class="mt-4">
+                <div class="mt-4">
                     <label for="habitos" class="block mb-2 text-sm">Hábitos</label>
                     <textarea id="habitos" name="habitos" rows="2" class="rounded-xl" placeholder="Consumo de tabaco, alcohol, etc."></textarea>
                 </div>
@@ -219,11 +181,11 @@
                         <label for="examenOsteoArticular" class="block mb-2 text-sm">Examen osteo-articular</label>
                         <textarea id="examenOsteoArticular" name="examenOsteoArticular" rows="2" class="rounded-xl" placeholder="Revisión de articulaciones, rangos de movimiento, etc."></textarea>
                     </div>
-                     <div>
+                    <div>
                         <label for="diagnosticoMedico" class="block mb-2 text-sm">Diagnóstico médico</label>
                         <textarea id="diagnosticoMedico" name="diagnosticoMedico" rows="2" class="rounded-xl" placeholder="Conclusión médica de la evaluación inicial"></textarea>
                     </div>
-                     <div>
+                    <div>
                         <label for="recomendaciones" class="block mb-2 text-sm">Recomendaciones y plan de acción</label>
                         <textarea id="recomendaciones" name="recomendaciones" rows="2" class="rounded-xl" placeholder="Ej: Iniciar plan de entrenamiento progresivo"></textarea>
                     </div>
@@ -256,77 +218,104 @@
         </div>
     </div>
 
-
     <script>
-    // --- IndexedDB helpers ---
-    const DB_NAME = 'fichaDeportivaDB';
-    const STORE_NAME = 'deportistas';
-    let db;
+    // --- Firebase config ---
+    // Pega aquí tu configuración de Firebase
+    const firebaseConfig = {
+        apiKey: "TU_API_KEY",
+        authDomain: "TU_AUTH_DOMAIN",
+        projectId: "TU_PROJECT_ID",
+        // ...otros datos...
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
 
-    function openDB() {
-        return new Promise((resolve, reject) => {
-            const request = indexedDB.open(DB_NAME, 1);
-            request.onerror = () => reject(request.error);
-            request.onsuccess = () => {
-                db = request.result;
-                resolve(db);
-            };
-            request.onupgradeneeded = () => {
-                db = request.result;
-                if (!db.objectStoreNames.contains(STORE_NAME)) {
-                    db.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
-                }
-            };
-        });
+    // --- UI y lógica de autenticación ---
+    const loginContainer = document.getElementById('loginContainer');
+    const loginForm = document.getElementById('loginForm');
+    const registerBtn = document.getElementById('registerBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const deportistaForm = document.getElementById('deportistaForm');
+    const deportistasList = document.getElementById('deportistasList');
+    const userIdDisplay = document.getElementById('userIdDisplay');
+
+    function showLogin() {
+        loginContainer.style.display = '';
+        deportistaForm.style.display = 'none';
+        deportistasList.style.display = 'none';
+        logoutBtn.classList.add('hidden');
+        userIdDisplay.classList.add('hidden');
+    }
+    function showApp(user) {
+        loginContainer.style.display = 'none';
+        deportistaForm.style.display = '';
+        deportistasList.style.display = '';
+        logoutBtn.classList.remove('hidden');
+        userIdDisplay.classList.remove('hidden');
+        userIdDisplay.textContent = `Usuario: ${user.email}`;
     }
 
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            showApp(user);
+            setupDynamicFields();
+            renderDeportistas();
+        } else {
+            showLogin();
+        }
+    });
+
+    loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+        try {
+            await auth.signInWithEmailAndPassword(email, password);
+        } catch (err) {
+            alert('Error de login: ' + err.message);
+        }
+    });
+    registerBtn.addEventListener('click', async () => {
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+        if (!email || !password) return alert('Completa email y contraseña');
+        try {
+            await auth.createUserWithEmailAndPassword(email, password);
+            alert('Usuario registrado. Ya puedes usar la app.');
+        } catch (err) {
+            alert('Error al registrar: ' + err.message);
+        }
+    });
+    logoutBtn.addEventListener('click', () => auth.signOut());
+
+    // --- Firestore CRUD ---
+    function getUserCollection() {
+        const user = auth.currentUser;
+        return db.collection('users').doc(user.uid).collection('deportistas');
+    }
     function addDeportista(data) {
-        return new Promise((resolve, reject) => {
-            const tx = db.transaction(STORE_NAME, 'readwrite');
-            const store = tx.objectStore(STORE_NAME);
-            const req = store.add(data);
-            req.onsuccess = () => resolve(req.result);
-            req.onerror = () => reject(req.error);
-        });
+        return getUserCollection().add(data);
     }
-
     function getAllDeportistas() {
-        return new Promise((resolve, reject) => {
-            const tx = db.transaction(STORE_NAME, 'readonly');
-            const store = tx.objectStore(STORE_NAME);
-            const req = store.getAll();
-            req.onsuccess = () => resolve(req.result);
-            req.onerror = () => reject(req.error);
-        });
+        return getUserCollection().get().then(snapshot => snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
     }
-
     function updateDeportista(id, data) {
-        return new Promise((resolve, reject) => {
-            const tx = db.transaction(STORE_NAME, 'readwrite');
-            const store = tx.objectStore(STORE_NAME);
-            data.id = id;
-            const req = store.put(data);
-            req.onsuccess = () => resolve();
-            req.onerror = () => reject(req.error);
-        });
+        return getUserCollection().doc(id).set(data);
     }
-
     function deleteDeportista(id) {
-        return new Promise((resolve, reject) => {
-            const tx = db.transaction(STORE_NAME, 'readwrite');
-            const store = tx.objectStore(STORE_NAME);
-            const req = store.delete(id);
-            req.onsuccess = () => resolve();
-            req.onerror = () => reject(req.error);
-        });
+        return getUserCollection().doc(id).delete();
+    }
+    function getDeportista(id) {
+        return getUserCollection().doc(id).get().then(doc => doc.exists ? doc.data() : null);
     }
 
-    // --- UI Logic (adapted) ---
+    // --- UI lógica (igual que antes, pero usando Firestore) ---
     let lesionCount = 0;
     let cirugiaCount = 0;
     let deportistaToDeleteId = null;
 
-    const form = document.getElementById('deportistaForm');
+    const form = deportistaForm;
     const submitBtn = document.getElementById('submitBtn');
     const cancelBtn = document.getElementById('cancelBtn');
     const editingDeportistaIdInput = document.getElementById('editingDeportistaId');
@@ -342,11 +331,8 @@
     form.addEventListener('submit', handleFormSubmit);
     cancelBtn.addEventListener('click', resetForm);
 
-    // Evitar submit con Enter en cualquier campo del formulario
     form.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
-            e.preventDefault();
-        }
+        if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') e.preventDefault();
     });
 
     async function handleFormSubmit(e) {
@@ -355,7 +341,7 @@
         const editingId = editingDeportistaIdInput.value;
         try {
             if (editingId) {
-                await updateDeportista(Number(editingId), deportistaData);
+                await updateDeportista(editingId, deportistaData);
             } else {
                 await addDeportista(deportistaData);
             }
@@ -380,14 +366,11 @@
             <div class="mt-2"><label for="descripcionLesion${index}" class="block mb-1 text-sm">Descripción</label><textarea id="descripcionLesion${index}" name="descripcionLesion${index}" rows="2" class="rounded-xl">${descripcion}</textarea></div>
         `;
         lesionesContainer.appendChild(div);
-
-        // Botón eliminar
         div.querySelector('.remove-lesion-btn').onclick = function() {
             div.remove();
             updateLesionIndices();
         };
     }
-
     function createCirugiaFields(index, data = {}) {
         const { fecha = '', motivo = '' } = data;
         const div = document.createElement('div');
@@ -401,15 +384,11 @@
             </div>
         `;
         cirugiasContainer.appendChild(div);
-
-        // Botón eliminar
         div.querySelector('.remove-cirugia-btn').onclick = function() {
             div.remove();
             updateCirugiaIndices();
         };
     }
-
-    // Actualiza los índices y los atributos id/name de los campos de lesiones
     function updateLesionIndices() {
         const lesionDivs = lesionesContainer.querySelectorAll('.p-4.bg-gray-100');
         lesionDivs.forEach((div, i) => {
@@ -423,8 +402,6 @@
         });
         lesionCount = lesionDivs.length;
     }
-
-    // Actualiza los índices y los atributos id/name de los campos de cirugías
     function updateCirugiaIndices() {
         const cirugiaDivs = cirugiasContainer.querySelectorAll('.p-4.bg-gray-100');
         cirugiaDivs.forEach((div, i) => {
@@ -436,8 +413,6 @@
         });
         cirugiaCount = cirugiaDivs.length;
     }
-
-    // Modifica buildDeportistaData para leer solo los campos que existen actualmente
     function buildDeportistaData() {
         const data = {
             nombre: form.nombre.value,
@@ -466,7 +441,6 @@
             recomendaciones: form.recomendaciones.value,
             updatedAt: new Date().toISOString()
         };
-        // Lesiones
         const lesionDivs = lesionesContainer.querySelectorAll('.p-4.bg-gray-100');
         lesionDivs.forEach((div, i) => {
             const fecha = div.querySelector(`input[type="date"]`)?.value;
@@ -474,7 +448,6 @@
             const descripcion = div.querySelector(`textarea`)?.value;
             if (fecha || zona || descripcion) data.lesiones.push({ fecha, zona, descripcion });
         });
-        // Cirugías
         const cirugiaDivs = cirugiasContainer.querySelectorAll('.p-4.bg-gray-100');
         cirugiaDivs.forEach((div, i) => {
             const fecha = div.querySelector(`input[type="date"]`)?.value;
@@ -483,16 +456,12 @@
         });
         return data;
     }
-
-    // Corrige el formateo de fecha para evitar desfase
     function formatearFecha(fecha) {
         if (!fecha) return 'N/A';
-        // fecha es 'YYYY-MM-DD'
         const [anio, mes, dia] = fecha.split('-');
         if (!anio || !mes || !dia) return 'N/A';
         return `${dia}-${mes}-${anio}`;
     }
-
     deportistasContent.addEventListener('click', (e) => {
         const target = e.target.closest('button');
         if (!target) return;
@@ -504,56 +473,44 @@
             confirmationModal.classList.remove('hidden');
         }
     });
-
     async function startEditing(id) {
         try {
-            const tx = db.transaction(STORE_NAME, 'readonly');
-            const store = tx.objectStore(STORE_NAME);
-            const req = store.get(Number(id));
-            req.onsuccess = () => {
-                const deportista = req.result;
-                if (!deportista) return;
-                Object.keys(deportista).forEach(key => {
-                    const el = form.elements[key];
-                    if (el) el.value = deportista[key];
-                });
-
-                // Lesiones
-                resetDynamicFields(lesionesContainer, 'C. Historial de Lesiones', createLesionFields);
-                lesionesContainer.innerHTML = `<h3 class="text-lg font-semibold">C. Historial de Lesiones</h3>`;
-                lesionCount = 0;
-                if (deportista.lesiones && deportista.lesiones.length > 0) {
-                    deportista.lesiones.forEach(item => { createLesionFields(lesionCount, item); lesionCount++; });
-                } else {
-                    createLesionFields(0);
-                    lesionCount = 1;
-                }
-
-                // Cirugías
-                resetDynamicFields(cirugiasContainer, 'B. Cirugías Previas', createCirugiaFields);
-                cirugiasContainer.innerHTML = `<h3 class="text-lg font-semibold">B. Cirugías Previas</h3>`;
-                cirugiaCount = 0;
-                if (deportista.cirugias && deportista.cirugias.length > 0) {
-                    deportista.cirugias.forEach(item => { createCirugiaFields(cirugiaCount, item); cirugiaCount++; });
-                } else {
-                    createCirugiaFields(0);
-                    cirugiaCount = 1;
-                }
-
-                editingDeportistaIdInput.value = id;
-                submitBtn.textContent = 'Actualizar Deportista';
-                cancelBtn.classList.remove('hidden');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            };
+            const deportista = await getDeportista(id);
+            if (!deportista) return;
+            Object.keys(deportista).forEach(key => {
+                const el = form.elements[key];
+                if (el) el.value = deportista[key];
+            });
+            resetDynamicFields(lesionesContainer, 'C. Historial de Lesiones', createLesionFields);
+            lesionesContainer.innerHTML = `<h3 class="text-lg font-semibold">C. Historial de Lesiones</h3>`;
+            lesionCount = 0;
+            if (deportista.lesiones && deportista.lesiones.length > 0) {
+                deportista.lesiones.forEach(item => { createLesionFields(lesionCount, item); lesionCount++; });
+            } else {
+                createLesionFields(0);
+                lesionCount = 1;
+            }
+            resetDynamicFields(cirugiasContainer, 'B. Cirugías Previas', createCirugiaFields);
+            cirugiasContainer.innerHTML = `<h3 class="text-lg font-semibold">B. Cirugías Previas</h3>`;
+            cirugiaCount = 0;
+            if (deportista.cirugias && deportista.cirugias.length > 0) {
+                deportista.cirugias.forEach(item => { createCirugiaFields(cirugiaCount, item); cirugiaCount++; });
+            } else {
+                createCirugiaFields(0);
+                cirugiaCount = 1;
+            }
+            editingDeportistaIdInput.value = id;
+            submitBtn.textContent = 'Actualizar Deportista';
+            cancelBtn.classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         } catch (error) {
             alert("Error al cargar datos para editar: " + error);
         }
     }
-
     confirmDeleteBtn.addEventListener('click', async () => {
         if (deportistaToDeleteId) {
             try {
-                await deleteDeportista(Number(deportistaToDeleteId));
+                await deleteDeportista(deportistaToDeleteId);
                 renderDeportistas();
             } catch (error) {
                 alert("Error al eliminar deportista: " + error);
@@ -567,7 +524,6 @@
         deportistaToDeleteId = null;
         confirmationModal.classList.add('hidden');
     });
-
     async function renderDeportistas() {
         const deportistas = await getAllDeportistas();
         if (deportistas.length === 0) {
@@ -577,9 +533,7 @@
         deportistas.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
         deportistasContent.innerHTML = deportistas.map(d => renderSingleDeportista(d)).join('');
     }
-
     function renderSingleDeportista(d) {
-        // Calcular edad
         function calcularEdad(fechaNacimiento) {
             if (!fechaNacimiento) return 'N/A';
             const hoy = new Date();
@@ -591,10 +545,7 @@
             }
             return edad;
         }
-
         const imc = (d.altura > 0 && d.peso > 0) ? (d.peso / ((d.altura/100)**2)).toFixed(2) : 'N/A';
-
-        // Render listas con fecha destacada
         const renderList = (items, type) => {
             if (!items || items.length === 0) return `<li>No se han registrado ${type}.</li>`;
             return items.map(item => `
@@ -605,7 +556,6 @@
                 </li>
             `).join('');
         };
-
         return `
             <div class="p-6 my-4 bg-white rounded-xl shadow-md border border-gray-200 space-y-3">
                 <div class="flex justify-between items-start">
@@ -647,35 +597,26 @@
                 </div>
             </div>`;
     }
-
     function resetDynamicFields(container, title, createFn) {
-    container.innerHTML = `<h3 class="text-lg font-semibold">${title}</h3>`;
-    createFn(0);
-}
-
-function setupDynamicFields() {
-    addLesionBtn.addEventListener('click', () => { createLesionFields(lesionCount); lesionCount++; });
-    addCirugiaBtn.addEventListener('click', () => { createCirugiaFields(cirugiaCount); cirugiaCount++; });
-    resetForm();
-}
-
-function resetForm() {
-    form.reset();
-    editingDeportistaIdInput.value = '';
-    submitBtn.textContent = 'Guardar Deportista';
-    cancelBtn.classList.add('hidden');
-    resetDynamicFields(lesionesContainer, 'C. Historial de Lesiones', createLesionFields);
-    lesionCount = 1;
-    resetDynamicFields(cirugiasContainer, 'B. Cirugías Previas', createCirugiaFields);
-    cirugiaCount = 1;
-}
-
-    window.onload = async function() {
-        await openDB();
-        setupDynamicFields();
-        renderDeportistas();
-    };
-</script>
+        container.innerHTML = `<h3 class="text-lg font-semibold">${title}</h3>`;
+        createFn(0);
+    }
+    function setupDynamicFields() {
+        addLesionBtn.addEventListener('click', () => { createLesionFields(lesionCount); lesionCount++; });
+        addCirugiaBtn.addEventListener('click', () => { createCirugiaFields(cirugiaCount); cirugiaCount++; });
+        resetForm();
+    }
+    function resetForm() {
+        form.reset();
+        editingDeportistaIdInput.value = '';
+        submitBtn.textContent = 'Guardar Deportista';
+        cancelBtn.classList.add('hidden');
+        resetDynamicFields(lesionesContainer, 'C. Historial de Lesiones', createLesionFields);
+        lesionCount = 1;
+        resetDynamicFields(cirugiasContainer, 'B. Cirugías Previas', createCirugiaFields);
+        cirugiaCount = 1;
+    }
+    </script>
 </body>
 </html>
 
