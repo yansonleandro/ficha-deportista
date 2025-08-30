@@ -111,10 +111,10 @@
                     </div>
                 </div>
             </div>
-            <!-- Sección de Datos Físicos y Deportivos -->
+            <!-- Sección de Datos Físicos -->
             <div class="p-6 bg-gray-50 rounded-2xl">
-                <h2 class="text-2xl font-semibold mb-4">Datos Físicos y Deportivos</h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <h2 class="text-2xl font-semibold mb-4">Datos Físicos</h2>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div>
                         <label for="altura" class="block mb-2 text-sm">Altura (cm)</label>
                         <input type="number" id="altura" name="altura" class="rounded-xl" placeholder="Ej: 190">
@@ -134,84 +134,43 @@
                             <option value="Pivot">Pivot</option>
                         </select>
                     </div>
-                </div>
-                <div class="mt-4">
-                    <label for="condicionFisica" class="block mb-2 text-sm">Condición física</label>
-                    <textarea id="condicionFisica" name="condicionFisica" rows="2" class="rounded-xl" placeholder="Resultados de pruebas de resistencia, fuerza, etc."></textarea>
-                </div>
-                <div class="mt-4">
-                    <label for="rendimientoReciente" class="block mb-2 text-sm">Rendimiento reciente</label>
-                    <textarea id="rendimientoReciente" name="rendimientoReciente" rows="2" class="rounded-xl" placeholder="Mejores marcas, logros, competencias"></textarea>
-                </div>
-                <div class="mt-4">
-                    <label for="objetivosDeportivos" class="block mb-2 text-sm">Objetivos deportivos</label>
-                    <textarea id="objetivosDeportivos" name="objetivosDeportivos" rows="2" class="rounded-xl" placeholder="Metas a corto, mediano y largo plazo"></textarea>
+                    <div>
+                        <label for="miembroDominante" class="block mb-2 text-sm">Miembro dominante</label>
+                        <select id="miembroDominante" name="miembroDominante" class="rounded-xl">
+                            <option value="">Seleccionar...</option>
+                            <option value="Derecho">Derecho</option>
+                            <option value="Izquierdo">Izquierdo</option>
+                        </select>
+                    </div>
                 </div>
             </div>
             <!-- Sección de Historia Clínica -->
             <div class="p-6 bg-gray-50 rounded-2xl">
                 <h2 class="text-2xl font-semibold mb-4">Historia Clínica</h2>
-                <h3 class="text-lg font-semibold mb-3">A. Antecedentes Personales</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label for="alergias" class="block mb-2 text-sm">Alergias</label>
                         <input type="text" id="alergias" name="alergias" class="rounded-xl" placeholder="Medicamentos, alimentos, etc.">
                     </div>
                     <div>
-                        <label for="vacunas" class="block mb-2 text-sm">Vacunas</label>
-                        <input type="text" id="vacunas" name="vacunas" class="rounded-xl" placeholder="Esquema completo">
+                        <label for="medicamentosActuales" class="block mb-2 text-sm">Medicamentos actuales</label>
+                        <textarea id="medicamentosActuales" name="medicamentosActuales" rows="2" class="rounded-xl" placeholder="Dosis y motivo"></textarea>
                     </div>
                 </div>
                 <div class="mt-4">
-                    <label for="enfermedadesCronicas" class="block mb-2 text-sm">Enfermedades crónicas</label>
-                    <textarea id="enfermedadesCronicas" name="enfermedadesCronicas" rows="2" class="rounded-xl" placeholder="Asma, diabetes, etc."></textarea>
+                    <label for="antecedentesFamiliares" class="block mb-2 text-sm">Antecedentes familiares</label>
+                    <textarea id="antecedentesFamiliares" name="antecedentesFamiliares" rows="2" class="rounded-xl" placeholder="Ej: historial de diabetes, enfermedades cardiacas"></textarea>
                 </div>
                 <div class="mt-4">
-                    <label for="medicamentosActuales" class="block mb-2 text-sm">Medicamentos actuales</label>
-                    <textarea id="medicamentosActuales" name="medicamentosActuales" rows="2" class="rounded-xl" placeholder="Dosis y motivo"></textarea>
+                    <label for="observaciones" class="block mb-2 text-sm">Observaciones</label>
+                    <textarea id="observaciones" name="observaciones" rows="2" class="rounded-xl" placeholder="Ej: nota sobre la condición física o emocional del deportista"></textarea>
                 </div>
-                <div class="mt-4">
-                    <label for="habitos" class="block mb-2 text-sm">Hábitos</label>
-                    <textarea id="habitos" name="habitos" rows="2" class="rounded-xl" placeholder="Consumo de tabaco, alcohol, etc."></textarea>
-                </div>
-                <div id="cirugiasContainer" class="space-y-4 mt-6">
-                    <h3 class="text-lg font-semibold">B. Cirugías Previas</h3>
-                </div>
-                <button type="button" id="addCirugiaBtn" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
-                    + Añadir Cirugía
-                </button>
                 <div id="lesionesContainer" class="space-y-4 mt-6">
-                    <h3 class="text-lg font-semibold">C. Historial de Lesiones</h3>
+                    <h3 class="text-lg font-semibold">Historial de Lesiones</h3>
                 </div>
                 <button type="button" id="addLesionBtn" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
                     + Añadir Lesión
                 </button>
-            </div>
-            <!-- Examen físico y diagnóstico inicial -->
-            <div class="p-6 bg-gray-50 rounded-2xl">
-                <h2 class="text-2xl font-semibold mb-4">Examen Físico y Diagnóstico Inicial</h2>
-                <div class="space-y-4">
-                    <div>
-                        <label for="estadoGeneral" class="block mb-2 text-sm">Estado general</label>
-                        <textarea id="estadoGeneral" name="estadoGeneral" rows="2" class="rounded-xl" placeholder="Observaciones sobre el aspecto físico y salud aparente"></textarea>
-                    </div>
-                    <div>
-                        <label for="examenCardiologico" class="block mb-2 text-sm">Examen cardiológico</label>
-                        <textarea id="examenCardiologico" name="examenCardiologico" rows="2" class="rounded-xl" placeholder="Frecuencia cardíaca en reposo, presión arterial, etc."></textarea>
-                    </div>
-                    <div>
-                        <label for="examenOsteoArticular" class="block mb-2 text-sm">Examen osteo-articular</label>
-                        <textarea id="examenOsteoArticular" name="examenOsteoArticular" rows="2" class="rounded-xl" placeholder="Revisión de articulaciones, rangos de movimiento, etc."></textarea>
-                    </div>
-                    <div>
-                        <label for="diagnosticoMedico" class="block mb-2 text-sm">Diagnóstico médico</label>
-                        <textarea id="diagnosticoMedico" name="diagnosticoMedico" rows="2" class="rounded-xl" placeholder="Conclusión médica de la evaluación inicial"></textarea>
-                    </div>
-                    <div>
-                        <label for="recomendaciones" class="block mb-2 text-sm">Recomendaciones y plan de acción</label>
-                        <textarea id="recomendaciones" name="recomendaciones" rows="2" class="rounded-xl" placeholder="Ej: Iniciar plan de entrenamiento progresivo"></textarea>
-                    </div>
-                </div>
             </div>
             <div class="flex items-center space-x-4">
                 <button type="submit" id="submitBtn" class="button button-primary flex-1">Guardar Deportista</button>
@@ -353,6 +312,7 @@
     // --- Firestore CRUD ---
     function getUserCollection() {
         const user = auth.currentUser;
+        if (!user) throw new Error("No user logged in");
         return db.collection('users').doc(user.uid).collection('deportistas');
     }
     function addDeportista(data) {
@@ -371,9 +331,8 @@
         return getUserCollection().doc(id).get().then(doc => doc.exists ? doc.data() : null);
     }
 
-    // --- UI lógica (igual que antes, pero usando Firestore) ---
+    // --- UI lógica ---
     let lesionCount = 0;
-    let cirugiaCount = 0;
     let deportistaToDeleteId = null;
 
     const form = deportistaForm;
@@ -382,8 +341,6 @@
     const editingDeportistaIdInput = document.getElementById('editingDeportistaId');
     const addLesionBtn = document.getElementById('addLesionBtn');
     const lesionesContainer = document.getElementById('lesionesContainer');
-    const addCirugiaBtn = document.getElementById('addCirugiaBtn');
-    const cirugiasContainer = document.getElementById('cirugiasContainer');
     const deportistasContent = document.getElementById('deportistasContent');
     const confirmationModal = document.getElementById('confirmationModal');
     const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
@@ -436,24 +393,6 @@
             updateLesionIndices();
         };
     }
-    function createCirugiaFields(index, data = {}) {
-        const { fecha = '', motivo = '' } = data;
-        const div = document.createElement('div');
-        div.className = 'p-4 bg-gray-100 rounded-lg border border-gray-200 relative';
-        div.innerHTML = `
-            <button type="button" class="absolute top-2 right-2 text-red-600 font-bold text-lg remove-cirugia-btn" title="Eliminar cirugía" data-index="${index}">&times;</button>
-            <h4 class="text-md font-semibold mb-2">Cirugía ${index + 1}</h4>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                 <div><label for="fechaCirugia${index}" class="block mb-1 text-sm">Fecha</label><input type="date" id="fechaCirugia${index}" value="${fecha}" class="rounded-xl"></div>
-                 <div><label for="motivoCirugia${index}" class="block mb-1 text-sm">Motivo</label><input type="text" id="motivoCirugia${index}" name="motivoCirugia${index}" value="${motivo}" class="rounded-xl"></div>
-            </div>
-        `;
-        cirugiasContainer.appendChild(div);
-        div.querySelector('.remove-cirugia-btn').onclick = function() {
-            div.remove();
-            updateCirugiaIndices();
-        };
-    }
     function updateLesionIndices() {
         const lesionDivs = lesionesContainer.querySelectorAll('.p-4.bg-gray-100');
         lesionDivs.forEach((div, i) => {
@@ -467,17 +406,6 @@
         });
         lesionCount = lesionDivs.length;
     }
-    function updateCirugiaIndices() {
-        const cirugiaDivs = cirugiasContainer.querySelectorAll('.p-4.bg-gray-100');
-        cirugiaDivs.forEach((div, i) => {
-            div.querySelector('h4').textContent = `Cirugía ${i + 1}`;
-            div.querySelector('.remove-cirugia-btn').setAttribute('data-index', i);
-            div.querySelector('input[type="date"]').id = `fechaCirugia${i}`;
-            div.querySelector('input[type="text"]').id = `motivoCirugia${i}`;
-            div.querySelector('input[type="text"]').name = `motivoCirugia${i}`;
-        });
-        cirugiaCount = cirugiaDivs.length;
-    }
     function buildDeportistaData() {
         const data = {
             nombre: form.nombre.value,
@@ -490,21 +418,12 @@
             altura: form.altura.value,
             peso: form.peso.value,
             posicion: form.posicion.value,
-            condicionFisica: form.condicionFisica.value,
-            rendimientoReciente: form.rendimientoReciente.value,
-            objetivosDeportivos: form.objetivosDeportivos.value,
+            miembroDominante: form.miembroDominante.value,
             alergias: form.alergias.value,
-            vacunas: form.vacunas.value,
-            enfermedadesCronicas: form.enfermedadesCronicas.value,
             medicamentosActuales: form.medicamentosActuales.value,
-            habitos: form.habitos.value,
-            cirugias: [],
+            antecedentesFamiliares: form.antecedentesFamiliares.value,
+            observaciones: form.observaciones.value,
             lesiones: [],
-            estadoGeneral: form.estadoGeneral.value,
-            examenCardiologico: form.examenCardiologico.value,
-            examenOsteoArticular: form.examenOsteoArticular.value,
-            diagnosticoMedico: form.diagnosticoMedico.value,
-            recomendaciones: form.recomendaciones.value,
             updatedAt: new Date().toISOString()
         };
         const lesionDivs = lesionesContainer.querySelectorAll('.p-4.bg-gray-100');
@@ -513,12 +432,6 @@
             const zona = div.querySelector(`input[type="text"]`)?.value;
             const descripcion = div.querySelector(`textarea`)?.value;
             if (fecha || zona || descripcion) data.lesiones.push({ fecha, zona, descripcion });
-        });
-        const cirugiaDivs = cirugiasContainer.querySelectorAll('.p-4.bg-gray-100');
-        cirugiaDivs.forEach((div, i) => {
-            const fecha = div.querySelector(`input[type="date"]`)?.value;
-            const motivo = div.querySelector(`input[type="text"]`)?.value;
-            if (fecha || motivo) data.cirugias.push({ fecha, motivo });
         });
         return data;
     }
@@ -543,7 +456,7 @@
         if (!items || items.length === 0) return `<li>No se han registrado ${type}.</li>`;
         return items.map(item => `
             <li>
-                <span class="font-semibold">${item.zona || item.motivo || 'N/A'}</span>
+                <span class="font-semibold">${item.zona || 'N/A'}</span>
                 ${item.descripcion ? `- ${item.descripcion}` : ''}
                 <span class="ml-2 px-2 py-0.5 rounded text-white bg-blue-700 font-bold text-xs align-middle">${formatearFecha(item.fecha)}</span>
             </li>
@@ -601,23 +514,14 @@
             });
             if (form.apellido) form.apellido.value = deportista.apellido || '';
             if (form.nombre) form.nombre.value = deportista.nombre || '';
-            resetDynamicFields(lesionesContainer, 'C. Historial de Lesiones', createLesionFields);
-            lesionesContainer.innerHTML = `<h3 class="text-lg font-semibold">C. Historial de Lesiones</h3>`;
+            resetDynamicFields(lesionesContainer, 'Historial de Lesiones', createLesionFields);
+            lesionesContainer.innerHTML = `<h3 class="text-lg font-semibold">Historial de Lesiones</h3>`;
             lesionCount = 0;
             if (deportista.lesiones && deportista.lesiones.length > 0) {
                 deportista.lesiones.forEach(item => { createLesionFields(lesionCount, item); lesionCount++; });
             } else {
                 createLesionFields(0);
                 lesionCount = 1;
-            }
-            resetDynamicFields(cirugiasContainer, 'B. Cirugías Previas', createCirugiaFields);
-            cirugiasContainer.innerHTML = `<h3 class="text-lg font-semibold">B. Cirugías Previas</h3>`;
-            cirugiaCount = 0;
-            if (deportista.cirugias && deportista.cirugias.length > 0) {
-                deportista.cirugias.forEach(item => { createCirugiaFields(cirugiaCount, item); cirugiaCount++; });
-            } else {
-                createCirugiaFields(0);
-                cirugiaCount = 1;
             }
             editingDeportistaIdInput.value = id;
             submitBtn.textContent = 'Actualizar Deportista';
@@ -634,7 +538,6 @@
     }
     function setupDynamicFields() {
         addLesionBtn.addEventListener('click', () => { createLesionFields(lesionCount); lesionCount++; });
-        addCirugiaBtn.addEventListener('click', () => { createCirugiaFields(cirugiaCount); cirugiaCount++; });
         resetForm();
     }
     function resetForm() {
@@ -642,10 +545,8 @@
         editingDeportistaIdInput.value = '';
         submitBtn.textContent = 'Guardar Deportista';
         cancelBtn.classList.add('hidden');
-        resetDynamicFields(lesionesContainer, 'C. Historial de Lesiones', createLesionFields);
+        resetDynamicFields(lesionesContainer, 'Historial de Lesiones', createLesionFields);
         lesionCount = 1;
-        resetDynamicFields(cirugiasContainer, 'B. Cirugías Previas', createCirugiaFields);
-        cirugiaCount = 1;
     }
     function renderSingleDeportista(d) {
         const fichaId = `ficha-${d.id}`;
@@ -684,55 +585,45 @@
                     ${showField('Fecha de nacimiento', d.fechaNacimiento)}
                 </div>
                 <div>
-                   <h4 class="font-bold text-gray-700 mt-2">Datos Físicos y Deportivos</h4>
+                   <h4 class="font-bold text-gray-700 mt-2">Datos Físicos</h4>
                    ${showField('Altura', d.altura ? d.altura + ' cm' : '')}
                    ${showField('Peso', d.peso ? d.peso + ' kg' : '')}
                    ${showField('IMC', imc !== 'N/A' ? imc : '')}
                    ${showField('Posición', d.posicion)}
-                   ${showField('Condición física', d.condicionFisica)}
-                   ${showField('Rendimiento reciente', d.rendimientoReciente)}
-                   ${showField('Objetivos deportivos', d.objetivosDeportivos)}
+                   ${showField('Miembro dominante', d.miembroDominante)}
                 </div>
                 <div>
                     <h4 class="font-bold text-gray-700 mt-2">Historia Clínica</h4>
                     ${showField('Alergias', d.alergias)}
-                    ${showField('Vacunas', d.vacunas)}
-                    ${showField('Enfermedades crónicas', d.enfermedadesCronicas)}
                     ${showField('Medicamentos actuales', d.medicamentosActuales)}
-                    ${showField('Hábitos', d.habitos)}
-                    <h5 class="font-semibold text-gray-700 mt-2">Cirugías:</h5>
-                    <ul class="list-disc list-inside text-sm text-gray-600">${renderList(d.cirugias, 'cirugías')}</ul>
+                    ${showField('Antecedentes familiares', d.antecedentesFamiliares)}
+                    ${showField('Observaciones', d.observaciones)}
                     <h5 class="font-semibold text-gray-700 mt-2">Lesiones:</h5>
                     <ul class="list-disc list-inside text-sm text-gray-600">${renderList(d.lesiones, 'lesiones')}</ul>
-                </div>
-                <div>
-                   <h4 class="font-bold text-gray-700 mt-2">Diagnóstico</h4>
-                   ${showField('Estado general', d.estadoGeneral)}
-                   ${showField('Examen cardiológico', d.examenCardiologico)}
-                   ${showField('Examen osteo-articular', d.examenOsteoArticular)}
-                   ${showField('Diagnóstico médico', d.diagnosticoMedico)}
-                   ${showField('Recomendaciones', d.recomendaciones)}
                 </div>
             </div>
         </div>
     </div>`;
     }
     async function renderDeportistas() {
-        const deportistas = await getAllDeportistas();
-        if (deportistas.length === 0) {
-            deportistasContent.innerHTML = `<p class="text-gray-500 text-center">No hay deportistas guardados aún.</p>`;
-            return;
+        try {
+            const deportistas = await getAllDeportistas();
+            if (deportistas.length === 0) {
+                deportistasContent.innerHTML = `<p class="text-gray-500 text-center">No hay deportistas guardados aún.</p>`;
+                return;
+            }
+            deportistas.sort((a, b) => {
+                const apA = (a.apellido || '').toLowerCase();
+                const apB = (b.apellido || '').toLowerCase();
+                if (apA < apB) return -1;
+                if (apA > apB) return 1;
+                return 0;
+            });
+            deportistasContent.innerHTML = deportistas.map(d => renderSingleDeportista(d)).join('');
+        } catch (err) {
+            deportistasContent.innerHTML = `<p class="text-red-500 text-center">Error al cargar deportistas.</p>`;
         }
-        deportistas.sort((a, b) => {
-            const apA = (a.apellido || '').toLowerCase();
-            const apB = (b.apellido || '').toLowerCase();
-            if (apA < apB) return -1;
-            if (apA > apB) return 1;
-            return 0;
-        });
-        deportistasContent.innerHTML = deportistas.map(d => renderSingleDeportista(d)).join('');
     }
     </script>
 </body>
 </html>
-
