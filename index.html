@@ -16,14 +16,28 @@
         input[type="text"]:focus, input[type="date"]:focus, input[type="number"]:focus, input[type="email"]:focus, textarea:focus, select:focus {
             outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
         }
-        .button { padding: 0.5rem 1rem; border-radius: 0.5rem; font-weight: 600; transition: background-color 0.2s; cursor: pointer; border: none;}
-        .button-primary { padding: 0.75rem 1.5rem; border-radius: 0.75rem; background-color: #1d4ed8; color: #ffffff;}
-        .button-primary:hover { background-color: #1e40af;}
+        textarea {
+            resize: none;
+            overflow-y: hidden; /* Oculta la barra de scroll hasta que sea necesario */
+        }
+        .button { padding: 0.75rem 1.5rem; border-radius: 0.75rem; font-weight: 600; transition: background-color 0.2s; cursor: pointer; border: none;}
+        .button-primary { background-color: #1d4ed8; color: #ffffff;} /* blue-700 */
+        .button-primary:hover { background-color: #1e40af;} /* blue-800 */
         .button-secondary { background-color: #6b7280; color: white;}
         .button-secondary:hover { background-color: #4b5563;}
         .button-danger { background-color: #dc2626; color: white;}
         .button-danger:hover { background-color: #b91c1c;}
         .rotate-90 { transform: rotate(90deg);}
+        select.custom-select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+        }
         .transition-transform { transition: transform 0.2s;}
         /* Notificación flotante */
         #floatingNotification {
@@ -125,7 +139,7 @@
                     </div>
                     <div>
                         <label for="posicion" class="block mb-2 text-sm">Posición</label>
-                        <select id="posicion" name="posicion" class="rounded-xl">
+                        <select id="posicion" name="posicion" class="rounded-xl custom-select">
                             <option value="">Seleccionar...</option>
                             <option value="Base">Base</option>
                             <option value="Escolta">Escolta</option>
@@ -136,7 +150,7 @@
                     </div>
                     <div>
                         <label for="miembroDominante" class="block mb-2 text-sm">Miembro dominante</label>
-                        <select id="miembroDominante" name="miembroDominante" class="rounded-xl">
+                        <select id="miembroDominante" name="miembroDominante" class="rounded-xl custom-select">
                             <option value="">Seleccionar...</option>
                             <option value="Derecho">Derecho</option>
                             <option value="Izquierdo">Izquierdo</option>
@@ -154,28 +168,60 @@
                     </div>
                     <div>
                         <label for="medicamentosActuales" class="block mb-2 text-sm">Medicamentos actuales</label>
-                        <textarea id="medicamentosActuales" name="medicamentosActuales" rows="2" class="rounded-xl" placeholder="Dosis y motivo"></textarea>
+                        <textarea id="medicamentosActuales" name="medicamentosActuales" rows="2" class="rounded-xl" placeholder="Dosis y motivo" oninput="autoResize(this)"></textarea>
                     </div>
                 </div>
                 <div class="mt-4">
                     <label for="antecedentesFamiliares" class="block mb-2 text-sm">Antecedentes familiares</label>
-                    <textarea id="antecedentesFamiliares" name="antecedentesFamiliares" rows="2" class="rounded-xl" placeholder="Ej: historial de diabetes, enfermedades cardiacas"></textarea>
+                    <textarea id="antecedentesFamiliares" name="antecedentesFamiliares" rows="2" class="rounded-xl" placeholder="Ej: historial de diabetes, enfermedades cardiacas" oninput="autoResize(this)"></textarea>
                 </div>
                 <div class="mt-4">
                     <label for="observaciones" class="block mb-2 text-sm">Observaciones</label>
-                    <textarea id="observaciones" name="observaciones" rows="2" class="rounded-xl" placeholder="Ej: nota sobre la condición física o emocional del deportista"></textarea>
+                    <textarea id="observaciones" name="observaciones" rows="2" class="rounded-xl" placeholder="Ej: nota sobre la condición física o emocional del deportista" oninput="autoResize(this)"></textarea>
                 </div>
                 <div id="lesionesContainer" class="space-y-4 mt-6">
                     <h3 class="text-lg font-semibold">Historial de Lesiones</h3>
                 </div>
-                <button type="button" id="addLesionBtn" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                <button type="button" id="addLesionBtn" class="mt-4 px-4 py-2 bg-blue-700 text-white rounded-xl hover:bg-blue-800 transition">
                     + Añadir Lesión
+                </button>
+            </div>
+            <!-- Sección de Evaluaciones Funcionales -->
+            <div class="p-6 bg-gray-50 rounded-2xl">
+                <h2 class="text-2xl font-semibold mb-4">Evaluaciones Funcionales</h2>
+                <div id="evaluacionesFuncionalesContainer" class="space-y-4 mt-6">
+                    <h3 class="text-lg font-semibold">Historial de Evaluaciones Funcionales</h3>
+                </div>
+                <button type="button" id="addEvaluacionFuncionalBtn" class="mt-4 px-4 py-2 bg-blue-700 text-white rounded-xl hover:bg-blue-800 transition">
+                    + Añadir Evaluación Funcional
+                </button>
+            </div>
+            <!-- Sección de Evaluaciones de Fuerza -->
+            <div class="p-6 bg-gray-50 rounded-2xl">
+                <h2 class="text-2xl font-semibold mb-4">Evaluaciones de Fuerza</h2>
+                <div id="evaluacionesFuerzaContainer" class="space-y-4 mt-6">
+                    <h3 class="text-lg font-semibold">Historial de Evaluaciones de Fuerza</h3>
+                </div>
+                <button type="button" id="addEvaluacionFuerzaBtn" class="mt-4 px-4 py-2 bg-blue-700 text-white rounded-xl hover:bg-blue-800 transition">
+                    + Añadir Evaluación de Fuerza
+                </button>
+            </div>
+            <!-- Sección de Seguimiento de Crecimiento -->
+            <div class="p-6 bg-gray-50 rounded-2xl">
+                <h2 class="text-2xl font-semibold mb-4">Seguimiento de Crecimiento</h2>
+                <p class="text-sm text-gray-600 mb-4">Registra la altura y el peso del deportista a lo largo del tiempo.</p>
+                <div id="crecimientoContainer" class="space-y-4 mt-6">
+                    <h3 class="text-lg font-semibold">Historial de Crecimiento</h3>
+                </div>
+                <button type="button" id="addCrecimientoBtn" class="mt-4 px-4 py-2 bg-blue-700 text-white rounded-xl hover:bg-blue-800 transition">
+                    + Añadir Registro
                 </button>
             </div>
             <div class="flex items-center space-x-4">
                 <button type="submit" id="submitBtn" class="button button-primary flex-1">Guardar Deportista</button>
                 <button type="button" id="cancelBtn" class="button button-secondary flex-1 hidden">Cancelar Edición</button>
             </div>
+            
         </form>
         <!-- Área para mostrar la lista de deportistas guardados -->
         <div id="deportistasList" class="mt-8 p-6 bg-gray-50 rounded-2xl">
@@ -333,6 +379,9 @@
 
     // --- UI lógica ---
     let lesionCount = 0;
+    let evaluacionFuncionalCount = 0;
+    let evaluacionFuerzaCount = 0;
+    let crecimientoCount = 0;
     let deportistaToDeleteId = null;
 
     const form = deportistaForm;
@@ -340,7 +389,13 @@
     const cancelBtn = document.getElementById('cancelBtn');
     const editingDeportistaIdInput = document.getElementById('editingDeportistaId');
     const addLesionBtn = document.getElementById('addLesionBtn');
+    const addEvaluacionFuncionalBtn = document.getElementById('addEvaluacionFuncionalBtn');
+    const addEvaluacionFuerzaBtn = document.getElementById('addEvaluacionFuerzaBtn');
+    const addCrecimientoBtn = document.getElementById('addCrecimientoBtn');
     const lesionesContainer = document.getElementById('lesionesContainer');
+    const evaluacionesFuncionalesContainer = document.getElementById('evaluacionesFuncionalesContainer');
+    const evaluacionesFuerzaContainer = document.getElementById('evaluacionesFuerzaContainer');
+    const crecimientoContainer = document.getElementById('crecimientoContainer');
     const deportistasContent = document.getElementById('deportistasContent');
     const confirmationModal = document.getElementById('confirmationModal');
     const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
@@ -370,14 +425,15 @@
             resetForm();
             setTimeout(renderDeportistas, 1200);
         } catch (error) {
-            showStatusMessage("Error al guardar: " + error, "error", 4000);
+            console.error("Error al guardar deportista:", error);
+            showStatusMessage("Ocurrió un error al guardar. Inténtalo de nuevo.", "error", 4000);
         }
     }
 
     function createLesionFields(index, data = {}) {
         const { fecha = '', zona = '', descripcion = '' } = data;
         const div = document.createElement('div');
-        div.className = 'p-4 bg-gray-100 rounded-lg border border-gray-200 relative';
+        div.className = 'p-4 bg-gray-100 rounded-xl border border-gray-200 relative';
         div.innerHTML = `
             <button type="button" class="absolute top-2 right-2 text-red-600 font-bold text-lg remove-lesion-btn" title="Eliminar lesión" data-index="${index}">&times;</button>
             <h4 class="text-md font-semibold mb-2">Lesión ${index + 1}</h4>
@@ -385,13 +441,116 @@
                 <div><label for="fechaLesion${index}" class="block mb-1 text-sm">Fecha</label><input type="date" id="fechaLesion${index}" value="${fecha}" class="rounded-xl"></div>
                 <div><label for="zonaLesion${index}" class="block mb-1 text-sm">Zona del cuerpo</label><input type="text" id="zonaLesion${index}" name="zonaLesion${index}" value="${zona}" class="rounded-xl"></div>
             </div>
-            <div class="mt-2"><label for="descripcionLesion${index}" class="block mb-1 text-sm">Descripción y tratamiento</label><textarea id="descripcionLesion${index}" name="descripcionLesion${index}" rows="2" class="rounded-xl">${descripcion}</textarea></div>
+            <div class="mt-2"><label for="descripcionLesion${index}" class="block mb-1 text-sm">Descripción y tratamiento</label><textarea id="descripcionLesion${index}" name="descripcionLesion${index}" rows="2" class="rounded-xl" oninput="autoResize(this)">${descripcion}</textarea></div>
         `;
         lesionesContainer.appendChild(div);
         div.querySelector('.remove-lesion-btn').onclick = function() {
             div.remove();
             updateLesionIndices();
         };
+    }
+    function createEvaluacionFuncionalFields(index, data = {}) {
+        const { fecha = '', thomasModificado = '', testDeLunge = '', flexibilidadIsquiotibiales = '', rotacionCadera = '', sentadillaArranque = '', sentadillaMonopodal = '', movilidadHombro = '' } = data;
+        const div = document.createElement('div');
+        div.className = 'p-4 bg-gray-100 rounded-xl border border-gray-200 relative';
+        div.innerHTML = `
+            <button type="button" class="absolute top-2 right-2 text-red-600 font-bold text-lg remove-eval-funcional-btn" title="Eliminar evaluación" data-index="${index}">&times;</button>
+            <h4 class="text-md font-semibold mb-2">Evaluación Funcional ${index + 1}</h4>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div><label for="fechaEvalFuncional${index}" class="block mb-1 text-sm">Fecha</label><input type="date" id="fechaEvalFuncional${index}" value="${fecha}" class="rounded-xl"></div>
+                <div><label for="thomasModificado${index}" class="block mb-1 text-sm">Thomas Modificado</label><input type="text" id="thomasModificado${index}" value="${thomasModificado}" class="rounded-xl"></div>
+                <div><label for="testDeLunge${index}" class="block mb-1 text-sm">Test de Lunge</label><input type="text" id="testDeLunge${index}" value="${testDeLunge}" class="rounded-xl"></div>
+                <div><label for="flexibilidadIsquiotibiales${index}" class="block mb-1 text-sm">Flex. Isquiotibiales</label><input type="text" id="flexibilidadIsquiotibiales${index}" value="${flexibilidadIsquiotibiales}" class="rounded-xl"></div>
+                <div><label for="rotacionCadera${index}" class="block mb-1 text-sm">Rotación de Cadera</label><input type="text" id="rotacionCadera${index}" value="${rotacionCadera}" class="rounded-xl"></div>
+                <div><label for="sentadillaArranque${index}" class="block mb-1 text-sm">Sentadilla de Arranque</label><input type="text" id="sentadillaArranque${index}" value="${sentadillaArranque}" class="rounded-xl"></div>
+                <div><label for="sentadillaMonopodal${index}" class="block mb-1 text-sm">Sentadilla Monopodal</label><input type="text" id="sentadillaMonopodal${index}" value="${sentadillaMonopodal}" class="rounded-xl"></div>
+                <div><label for="movilidadHombro${index}" class="block mb-1 text-sm">Movilidad de Hombro</label><input type="text" id="movilidadHombro${index}" value="${movilidadHombro}" class="rounded-xl"></div>
+            </div>
+        `;
+        evaluacionesFuncionalesContainer.appendChild(div);
+        div.querySelector('.remove-eval-funcional-btn').onclick = function() {
+            div.remove();
+            updateEvaluacionFuncionalIndices();
+        };
+    }
+    function updateEvaluacionFuncionalIndices() {
+        const divs = evaluacionesFuncionalesContainer.querySelectorAll('.p-4.bg-gray-100');
+        divs.forEach((div, i) => {
+            div.querySelector('h4').textContent = `Evaluación Funcional ${i + 1}`;
+            div.querySelector('.remove-eval-funcional-btn').dataset.index = i;
+            const fields = ['fechaEvalFuncional', 'thomasModificado', 'testDeLunge', 'flexibilidadIsquiotibiales', 'rotacionCadera', 'sentadillaArranque', 'sentadillaMonopodal', 'movilidadHombro'];
+            fields.forEach(field => {
+                const input = div.querySelector(`[id^="${field}"]`);
+                if (input) input.id = `${field}${i}`;
+            });
+        });
+        evaluacionFuncionalCount = divs.length;
+    }
+    function createEvaluacionFuerzaFields(index, data = {}) {
+        const { fecha = '', IMPT = '', CMJ = '', isometricoCuadriceps = '', mcCall9090 = '', isometricoAductores = '', otrosTest = '' } = data;
+        const div = document.createElement('div');
+        div.className = 'p-4 bg-gray-100 rounded-xl border border-gray-200 relative';
+        div.innerHTML = `
+            <button type="button" class="absolute top-2 right-2 text-red-600 font-bold text-lg remove-eval-fuerza-btn" title="Eliminar evaluación" data-index="${index}">&times;</button>
+            <h4 class="text-md font-semibold mb-2">Evaluación de Fuerza ${index + 1}</h4>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div><label for="fechaEvalFuerza${index}" class="block mb-1 text-sm">Fecha</label><input type="date" id="fechaEvalFuerza${index}" value="${fecha}" class="rounded-xl"></div>
+                <div><label for="IMPT${index}" class="block mb-1 text-sm">IMPT</label><input type="text" id="IMPT${index}" value="${IMPT}" class="rounded-xl"></div>
+                <div><label for="CMJ${index}" class="block mb-1 text-sm">CMJ</label><input type="text" id="CMJ${index}" value="${CMJ}" class="rounded-xl"></div>
+                <div><label for="isometricoCuadriceps${index}" class="block mb-1 text-sm">Isométrico Cuádriceps</label><input type="text" id="isometricoCuadriceps${index}" value="${isometricoCuadriceps}" class="rounded-xl"></div>
+                <div><label for="mcCall9090${index}" class="block mb-1 text-sm">Mc Call 90-90</label><input type="text" id="mcCall9090${index}" value="${mcCall9090}" class="rounded-xl"></div>
+                <div><label for="isometricoAductores${index}" class="block mb-1 text-sm">Isométrico Aductores</label><input type="text" id="isometricoAductores${index}" value="${isometricoAductores}" class="rounded-xl"></div>
+                <div class="md:col-span-2"><label for="otrosTest${index}" class="block mb-1 text-sm">Otros Test</label><input type="text" id="otrosTest${index}" value="${otrosTest}" class="rounded-xl"></div>
+            </div>
+        `;
+        evaluacionesFuerzaContainer.appendChild(div);
+        div.querySelector('.remove-eval-fuerza-btn').onclick = function() {
+            div.remove();
+            updateEvaluacionFuerzaIndices();
+        };
+    }
+    function updateEvaluacionFuerzaIndices() {
+        const divs = evaluacionesFuerzaContainer.querySelectorAll('.p-4.bg-gray-100');
+        divs.forEach((div, i) => {
+            div.querySelector('h4').textContent = `Evaluación de Fuerza ${i + 1}`;
+            div.querySelector('.remove-eval-fuerza-btn').dataset.index = i;
+            const fields = ['fechaEvalFuerza', 'IMPT', 'CMJ', 'isometricoCuadriceps', 'mcCall9090', 'isometricoAductores', 'otrosTest'];
+            fields.forEach(field => {
+                const input = div.querySelector(`[id^="${field}"]`);
+                if (input) input.id = `${field}${i}`;
+            });
+        });
+        evaluacionFuerzaCount = divs.length;
+    }
+    function createCrecimientoFields(index, data = {}) {
+        const { fecha = '', altura = '', peso = '' } = data;
+        const div = document.createElement('div');
+        div.className = 'p-4 bg-gray-100 rounded-xl border border-gray-200 relative';
+        div.innerHTML = `
+            <button type="button" class="absolute top-2 right-2 text-red-600 font-bold text-lg remove-crecimiento-btn" title="Eliminar registro" data-index="${index}">&times;</button>
+            <h4 class="text-md font-semibold mb-2">Registro ${index + 1}</h4>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div><label for="fechaCrecimiento${index}" class="block mb-1 text-sm">Fecha</label><input type="date" id="fechaCrecimiento${index}" value="${fecha}" class="rounded-xl"></div>
+                <div><label for="alturaCrecimiento${index}" class="block mb-1 text-sm">Altura (cm)</label><input type="number" id="alturaCrecimiento${index}" value="${altura}" class="rounded-xl"></div>
+                <div><label for="pesoCrecimiento${index}" class="block mb-1 text-sm">Peso (kg)</label><input type="number" id="pesoCrecimiento${index}" value="${peso}" class="rounded-xl"></div>
+            </div>
+        `;
+        crecimientoContainer.appendChild(div);
+        div.querySelector('.remove-crecimiento-btn').onclick = function() {
+            div.remove();
+            updateCrecimientoIndices();
+        };
+    }
+    function updateCrecimientoIndices() {
+        const divs = crecimientoContainer.querySelectorAll('.p-4.bg-gray-100');
+        divs.forEach((div, i) => {
+            div.querySelector('h4').textContent = `Registro ${i + 1}`;
+            div.querySelector('.remove-crecimiento-btn').dataset.index = i;
+            div.querySelector('input[type="date"]').id = `fechaCrecimiento${i}`;
+            div.querySelector('input[type="number"][id^="altura"]').id = `alturaCrecimiento${i}`;
+            div.querySelector('input[type="number"][id^="peso"]').id = `pesoCrecimiento${i}`;
+        });
+        crecimientoCount = divs.length;
     }
     function updateLesionIndices() {
         const lesionDivs = lesionesContainer.querySelectorAll('.p-4.bg-gray-100');
@@ -424,6 +583,9 @@
             antecedentesFamiliares: form.antecedentesFamiliares.value,
             observaciones: form.observaciones.value,
             lesiones: [],
+            evaluacionesFuncionales: [],
+            evaluacionesFuerza: [],
+            crecimiento: [],
             updatedAt: new Date().toISOString()
         };
         const lesionDivs = lesionesContainer.querySelectorAll('.p-4.bg-gray-100');
@@ -433,6 +595,46 @@
             const descripcion = div.querySelector(`textarea`)?.value;
             if (fecha || zona || descripcion) data.lesiones.push({ fecha, zona, descripcion });
         });
+        const evaluacionFuncionalDivs = evaluacionesFuncionalesContainer.querySelectorAll('.p-4.bg-gray-100');
+        evaluacionFuncionalDivs.forEach((div, i) => {
+            const evalData = {
+                fecha: div.querySelector(`#fechaEvalFuncional${i}`)?.value,
+                thomasModificado: div.querySelector(`#thomasModificado${i}`)?.value,
+                testDeLunge: div.querySelector(`#testDeLunge${i}`)?.value,
+                flexibilidadIsquiotibiales: div.querySelector(`#flexibilidadIsquiotibiales${i}`)?.value,
+                rotacionCadera: div.querySelector(`#rotacionCadera${i}`)?.value,
+                sentadillaArranque: div.querySelector(`#sentadillaArranque${i}`)?.value,
+                sentadillaMonopodal: div.querySelector(`#sentadillaMonopodal${i}`)?.value,
+                movilidadHombro: div.querySelector(`#movilidadHombro${i}`)?.value,
+            };
+            if (Object.values(evalData).some(v => v)) {
+                data.evaluacionesFuncionales.push(evalData);
+            }
+        });
+        const evaluacionFuerzaDivs = evaluacionesFuerzaContainer.querySelectorAll('.p-4.bg-gray-100');
+        evaluacionFuerzaDivs.forEach((div, i) => {
+            const evalData = {
+                fecha: div.querySelector(`#fechaEvalFuerza${i}`)?.value,
+                IMPT: div.querySelector(`#IMPT${i}`)?.value,
+                CMJ: div.querySelector(`#CMJ${i}`)?.value,
+                isometricoCuadriceps: div.querySelector(`#isometricoCuadriceps${i}`)?.value,
+                mcCall9090: div.querySelector(`#mcCall9090${i}`)?.value,
+                isometricoAductores: div.querySelector(`#isometricoAductores${i}`)?.value,
+                otrosTest: div.querySelector(`#otrosTest${i}`)?.value,
+            };
+            if (Object.values(evalData).some(v => v)) {
+                data.evaluacionesFuerza.push(evalData);
+            }
+        });
+        const crecimientoDivs = crecimientoContainer.querySelectorAll('.p-4.bg-gray-100');
+        crecimientoDivs.forEach((div, i) => {
+            const fecha = div.querySelector(`#fechaCrecimiento${i}`)?.value;
+            const altura = div.querySelector(`#alturaCrecimiento${i}`)?.value;
+            const peso = div.querySelector(`#pesoCrecimiento${i}`)?.value;
+            if (fecha || altura || peso) {
+                data.crecimiento.push({ fecha, altura, peso });
+            }
+        });
         return data;
     }
     function formatearFecha(fecha) {
@@ -441,13 +643,15 @@
         if (!anio || !mes || !dia) return 'N/A';
         return `${dia}-${mes}-${anio}`;
     }
-    function calcularEdad(fechaNacimiento) {
+    function calcularEdad(fechaNacimiento, fechaReferencia) {
         if (!fechaNacimiento) return 'N/A';
-        const hoy = new Date();
+        const refDate = fechaReferencia ? new Date(fechaReferencia) : new Date();
+        if (isNaN(refDate.getTime())) return 'N/A';
+
         const nacimiento = new Date(fechaNacimiento);
-        let edad = hoy.getFullYear() - nacimiento.getFullYear();
-        const m = hoy.getMonth() - nacimiento.getMonth();
-        if (m < 0 || (m === 0 && hoy.getDate() < nacimiento.getDate())) {
+        let edad = refDate.getFullYear() - nacimiento.getFullYear();
+        const m = refDate.getMonth() - nacimiento.getMonth();
+        if (m < 0 || (m === 0 && refDate.getDate() < nacimiento.getDate())) {
             edad--;
         }
         return edad;
@@ -461,6 +665,66 @@
                 <span class="ml-2 px-2 py-0.5 rounded text-white bg-blue-700 font-bold text-xs align-middle">${formatearFecha(item.fecha)}</span>
             </li>
         `).join('');
+    }
+    function renderEvaluacionesFuncionalesList(items) {
+        if (!items || items.length === 0) return `<li>No se han registrado evaluaciones funcionales.</li>`;
+        const fieldsMap = {
+            thomasModificado: 'Thomas Modificado',
+            testDeLunge: 'Test de Lunge',
+            flexibilidadIsquiotibiales: 'Flex. Isquiotibiales',
+            rotacionCadera: 'Rotación de Cadera',
+            sentadillaArranque: 'Sentadilla de Arranque',
+            sentadillaMonopodal: 'Sentadilla Monopodal',
+            movilidadHombro: 'Movilidad de Hombro'
+        };
+        return items.map(item => {
+            const details = Object.entries(fieldsMap)
+                .map(([key, label]) => item[key] ? `<span class="block ml-4"><span class="font-semibold">${label}:</span> ${item[key]}</span>` : '')
+                .filter(Boolean).join('');
+            if (!details) return `<li>Evaluación del ${formatearFecha(item.fecha)} sin datos detallados.</li>`;
+            return `<li class="mt-2">
+                <span class="font-semibold">Evaluación del ${formatearFecha(item.fecha)}</span>
+                <div class="text-sm">${details}</div>
+            </li>`;
+        }).join('');
+    }
+    function renderEvaluacionesFuerzaList(items) {
+        if (!items || items.length === 0) return `<li>No se han registrado evaluaciones de fuerza.</li>`;
+        const fieldsMap = {
+            IMPT: 'IMPT',
+            CMJ: 'CMJ',
+            isometricoCuadriceps: 'Isométrico Cuádriceps',
+            mcCall9090: 'Mc Call 90-90',
+            isometricoAductores: 'Isométrico Aductores',
+            otrosTest: 'Otros Test'
+        };
+        return items.map(item => {
+            const details = Object.entries(fieldsMap)
+                .map(([key, label]) => item[key] ? `<span class="block ml-4"><span class="font-semibold">${label}:</span> ${item[key]}</span>` : '')
+                .filter(Boolean).join('');
+            if (!details) return `<li>Evaluación del ${formatearFecha(item.fecha)} sin datos detallados.</li>`;
+            return `<li class="mt-2">
+                <span class="font-semibold">Evaluación del ${formatearFecha(item.fecha)}</span>
+                <div class="text-sm">${details}</div>
+            </li>`;
+        }).join('');
+    }
+    function renderCrecimientoList(items, fechaNacimiento) {
+        if (!items || items.length === 0) return `<li>No se han registrado datos de crecimiento.</li>`;
+        return items.map(item => {
+            const edadEnRegistro = calcularEdad(fechaNacimiento, item.fecha);
+            const edadTexto = edadEnRegistro !== 'N/A' ? ` (Edad: ${edadEnRegistro} años)` : '';
+            const alturaTexto = item.altura ? `Altura: ${item.altura} cm` : '';
+            const pesoTexto = item.peso ? `Peso: ${item.peso} kg` : '';
+            const detalles = [alturaTexto, pesoTexto].filter(Boolean).join(', ');
+
+            return `
+                <li>
+                    <span class="font-semibold">${formatearFecha(item.fecha)}${edadTexto}:</span>
+                    <span class="ml-2">${detalles}</span>
+                </li>
+            `;
+        }).join('');
     }
     deportistasContent.addEventListener('click', (e) => {
         const header = e.target.closest('.ficha-header');
@@ -499,6 +763,11 @@
             });
         }
     });
+    function autoResize(element) {
+        element.style.height = 'auto';
+        element.style.height = (element.scrollHeight) + 'px';
+    }
+
     async function startEditing(id) {
         const ok = await customConfirm("¿Deseas editar este jugador?");
         if (!ok) {
@@ -514,30 +783,49 @@
             });
             if (form.apellido) form.apellido.value = deportista.apellido || '';
             if (form.nombre) form.nombre.value = deportista.nombre || '';
-            resetDynamicFields(lesionesContainer, 'Historial de Lesiones', createLesionFields);
+
             lesionesContainer.innerHTML = `<h3 class="text-lg font-semibold">Historial de Lesiones</h3>`;
             lesionCount = 0;
             if (deportista.lesiones && deportista.lesiones.length > 0) {
                 deportista.lesiones.forEach(item => { createLesionFields(lesionCount, item); lesionCount++; });
-            } else {
-                createLesionFields(0);
-                lesionCount = 1;
             }
+
+            evaluacionesFuncionalesContainer.innerHTML = `<h3 class="text-lg font-semibold">Historial de Evaluaciones Funcionales</h3>`;
+            evaluacionFuncionalCount = 0;
+            if (deportista.evaluacionesFuncionales && deportista.evaluacionesFuncionales.length > 0) {
+                deportista.evaluacionesFuncionales.forEach(item => { createEvaluacionFuncionalFields(evaluacionFuncionalCount, item); evaluacionFuncionalCount++; });
+            }
+            evaluacionesFuerzaContainer.innerHTML = `<h3 class="text-lg font-semibold">Historial de Evaluaciones de Fuerza</h3>`;
+            evaluacionFuerzaCount = 0;
+            if (deportista.evaluacionesFuerza && deportista.evaluacionesFuerza.length > 0) {
+                deportista.evaluacionesFuerza.forEach(item => { createEvaluacionFuerzaFields(evaluacionFuerzaCount, item); evaluacionFuerzaCount++; });
+            }
+            crecimientoContainer.innerHTML = `<h3 class="text-lg font-semibold">Historial de Crecimiento</h3>`;
+            crecimientoCount = 0;
+            if (deportista.crecimiento && deportista.crecimiento.length > 0) {
+                deportista.crecimiento.forEach(item => { createCrecimientoFields(crecimientoCount, item); crecimientoCount++; });
+            }
+
             editingDeportistaIdInput.value = id;
             submitBtn.textContent = 'Actualizar Deportista';
             cancelBtn.classList.remove('hidden');
             window.scrollTo({ top: 0, behavior: 'smooth' });
+            // Adjust textarea sizes after populating them
+            setTimeout(() => {
+                form.querySelectorAll('textarea').forEach(textarea => autoResize(textarea));
+            }, 0);
             showStatusMessage("Modo edición activado.", "success", 1500);
         } catch (error) {
+            console.error("Error loading data for editing:", error);
             showStatusMessage("Error al cargar datos para editar: " + error, "error", 4000);
         }
     }
-    function resetDynamicFields(container, title, createFn) {
-        container.innerHTML = `<h3 class="text-lg font-semibold">${title}</h3>`;
-        createFn(0);
-    }
+
     function setupDynamicFields() {
         addLesionBtn.addEventListener('click', () => { createLesionFields(lesionCount); lesionCount++; });
+        addEvaluacionFuncionalBtn.addEventListener('click', () => { createEvaluacionFuncionalFields(evaluacionFuncionalCount); evaluacionFuncionalCount++; });
+        addEvaluacionFuerzaBtn.addEventListener('click', () => { createEvaluacionFuerzaFields(evaluacionFuerzaCount); evaluacionFuerzaCount++; });
+        addCrecimientoBtn.addEventListener('click', () => { createCrecimientoFields(crecimientoCount); crecimientoCount++; });
         resetForm();
     }
     function resetForm() {
@@ -545,8 +833,20 @@
         editingDeportistaIdInput.value = '';
         submitBtn.textContent = 'Guardar Deportista';
         cancelBtn.classList.add('hidden');
-        resetDynamicFields(lesionesContainer, 'Historial de Lesiones', createLesionFields);
-        lesionCount = 1;
+        form.querySelectorAll('textarea').forEach(textarea => {
+            textarea.style.height = 'auto';
+        });
+        lesionesContainer.innerHTML = `<h3 class="text-lg font-semibold">Historial de Lesiones</h3>`;
+        lesionCount = 0;
+
+        evaluacionesFuncionalesContainer.innerHTML = `<h3 class="text-lg font-semibold">Historial de Evaluaciones Funcionales</h3>`;
+        evaluacionFuncionalCount = 0;
+
+        evaluacionesFuerzaContainer.innerHTML = `<h3 class="text-lg font-semibold">Historial de Evaluaciones de Fuerza</h3>`;
+        evaluacionFuerzaCount = 0;
+
+        crecimientoContainer.innerHTML = `<h3 class="text-lg font-semibold">Historial de Crecimiento</h3>`;
+        crecimientoCount = 0;
     }
     function renderSingleDeportista(d) {
         const fichaId = `ficha-${d.id}`;
@@ -559,13 +859,13 @@
         }
 
         return `
-    <div class="deportista-ficha border rounded mb-2 overflow-hidden">
+    <div class="deportista-ficha border rounded-xl mb-2 overflow-hidden shadow-sm bg-white">
         <div class="ficha-header bg-blue-100 cursor-pointer flex justify-between items-center px-4 py-2" data-ficha="${fichaId}">
             <span class="font-bold text-blue-900">${nombreCompleto}</span>
-            <span class="expand-icon transition-transform ml-2">&#9654;</span>
+            <svg class="expand-icon transition-transform h-5 w-5 text-blue-800" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" /></svg>
         </div>
-        <div id="${fichaId}" class="ficha-body hidden bg-white px-4 pb-4">
-            <div class="p-6 my-4 bg-white rounded-xl shadow-md border border-gray-200 space-y-3">
+        <div id="${fichaId}" class="ficha-body hidden p-4">
+            <div class="space-y-4">
                 <div class="flex justify-between items-start">
                     <div>
                         <h3 class="text-xl font-bold text-blue-800">${nombreCompleto}</h3>
@@ -582,7 +882,7 @@
                     ${showField('Email', d.email)}
                     ${showField('Contacto de emergencia', d.nombreEmergencia)}
                     ${showField('Teléfono de emergencia', d.telefonoEmergencia)}
-                    ${showField('Fecha de nacimiento', d.fechaNacimiento)}
+                    ${showField('Fecha de nacimiento', formatearFecha(d.fechaNacimiento))}
                 </div>
                 <div>
                    <h4 class="font-bold text-gray-700 mt-2">Datos Físicos</h4>
@@ -599,7 +899,13 @@
                     ${showField('Antecedentes familiares', d.antecedentesFamiliares)}
                     ${showField('Observaciones', d.observaciones)}
                     <h5 class="font-semibold text-gray-700 mt-2">Lesiones:</h5>
-                    <ul class="list-disc list-inside text-sm text-gray-600">${renderList(d.lesiones, 'lesiones')}</ul>
+                    <ul class="list-disc list-inside text-sm text-gray-600 space-y-2">${renderList(d.lesiones, 'lesiones')}</ul>
+                    <h5 class="font-semibold text-gray-700 mt-2">Evaluaciones Funcionales:</h5>
+                    <ul class="list-disc list-inside text-sm text-gray-600 space-y-2">${renderEvaluacionesFuncionalesList(d.evaluacionesFuncionales)}</ul>
+                    <h5 class="font-semibold text-gray-700 mt-2">Evaluaciones de Fuerza:</h5>
+                    <ul class="list-disc list-inside text-sm text-gray-600 space-y-2">${renderEvaluacionesFuerzaList(d.evaluacionesFuerza)}</ul>
+                    <h5 class="font-semibold text-gray-700 mt-2">Seguimiento de Crecimiento:</h5>
+                    <ul class="list-disc list-inside text-sm text-gray-600 space-y-2">${renderCrecimientoList(d.crecimiento, d.fechaNacimiento)}</ul>
                 </div>
             </div>
         </div>
