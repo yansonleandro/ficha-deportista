@@ -383,9 +383,9 @@
             <h4 class="text-md font-semibold mb-2">Lesión ${index + 1}</h4>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div><label for="fechaLesion${index}" class="block mb-1 text-sm">Fecha</label><input type="date" id="fechaLesion${index}" value="${fecha}" class="rounded-xl"></div>
-                <div><label for="zonaLesion${index}" class="block mb-1 text-sm">Zona</label><input type="text" id="zonaLesion${index}" name="zonaLesion${index}" value="${zona}" class="rounded-xl"></div>
+                <div><label for="zonaLesion${index}" class="block mb-1 text-sm">Zona del cuerpo</label><input type="text" id="zonaLesion${index}" name="zonaLesion${index}" value="${zona}" class="rounded-xl"></div>
             </div>
-            <div class="mt-2"><label for="descripcionLesion${index}" class="block mb-1 text-sm">Descripción</label><textarea id="descripcionLesion${index}" name="descripcionLesion${index}" rows="2" class="rounded-xl">${descripcion}</textarea></div>
+            <div class="mt-2"><label for="descripcionLesion${index}" class="block mb-1 text-sm">Descripción y tratamiento</label><textarea id="descripcionLesion${index}" name="descripcionLesion${index}" rows="2" class="rounded-xl">${descripcion}</textarea></div>
         `;
         lesionesContainer.appendChild(div);
         div.querySelector('.remove-lesion-btn').onclick = function() {
